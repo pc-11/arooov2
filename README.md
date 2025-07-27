@@ -2,6 +2,7 @@
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
+[![Made with Supabase](https://supabase.com/badge-made-with-supabase.svg)](https://supabase.com)
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
 ## Features

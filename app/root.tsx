@@ -8,6 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { MainNavbar } from "../components/main-navbar";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -42,7 +43,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <div className="min-h-screen bg-[#ebebeb]">
+      <div className="mx-auto">
+        <MainNavbar />
+        <main className="px-4 sm:px-6 lg:px-8 py-8">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
