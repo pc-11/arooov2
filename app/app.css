@@ -5,6 +5,7 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --color-primary: #be2361;
   --color-secondary: #cf276a;
+  --color-button-active: #d23876;
 }
 
 html,
@@ -15,12 +16,20 @@ body {
     color-scheme: light;
   }
 }
+a {
+  color: #337ab7;
+}
+a:hover {
+  color: #23527c;
+  text-decoration: underline;
+}
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
+  color: #000;
   font-family: "Bree Serif", sans-serif;
   font-weight: 800;
   line-height: 1.4;
