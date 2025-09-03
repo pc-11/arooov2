@@ -2,6 +2,8 @@ import { Welcome } from "../welcome/welcome";
 import { Link } from "../../components/ui-toolkit/link";
 import { Button } from "../../components/ui-toolkit/button";
 
+import { MembersLink } from "components/core/links";
+
 export function meta() {
   return [
     { title: "New React Router App" },
@@ -14,11 +16,9 @@ export default function Home() {
     <div>
       <Welcome />
       <div className="mt-8 flex justify-center">
-        <Link href="/members">
-          <Button color="blue">
-            Enter Members Area
-          </Button>
-        </Link>
+        <MembersLink>
+          <Button color="blue">Enter Members Area</Button>
+        </MembersLink>
       </div>
     </div>
   );

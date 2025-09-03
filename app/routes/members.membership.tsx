@@ -7,6 +7,7 @@ import { Textarea } from "../../components/ui-toolkit/textarea";
 
 import { Email } from "../../components/core/email";
 import { HeadingComponentUsing } from "../../components/core/heading";
+import { CancelLink, SupportLink } from "components/core/links";
 import { StripeDropdown } from "components/core/stripe-dropdown";
 import { TableOfContents } from "components/core/table-of-contents";
 
@@ -86,9 +87,7 @@ const TableDuesSuggestions: React.FC = ({}) => {
       suggestedAmount: (
         <span>
           $100 +{" "}
-          <Link href="/support/">
-            recurring donation in PayPal of your choice
-          </Link>
+          <SupportLink>recurring donation in PayPal of your choice</SupportLink>
         </span>
       ),
     },
@@ -264,8 +263,8 @@ const SectionCancelMembership: React.FC = ({}) => {
     <div>
       <p>
         If you'd like to cancel your Double Union membership, click{" "}
-        <Link href="./cancel">here</Link>. If you have other questions about
-        dues and membership, please email{" "}
+        <CancelLink>here</CancelLink>. If you have other questions about dues
+        and membership, please email{" "}
         <Email emailStr="membership@doubleunion.org" /> to reach out to the
         membership coordinators.
       </p>
@@ -275,7 +274,7 @@ const SectionCancelMembership: React.FC = ({}) => {
 
 export default function MembersMembership(): React.ReactElement {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8  max-w-4xl mx-auto">
       <Heading id={HeaderId.ManageMembership} level={1} />
       <SectionTableOfContents />
       <Heading id={HeaderId.UpdateDues} level={2} />
