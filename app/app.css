@@ -32,5 +32,10 @@ h6 {
   color: #000;
   font-family: "Bree Serif", sans-serif;
   font-weight: 800;
-  line-height: 1.4;
+}
+h1 {
+  font-size: 30px;
+}
+h2 {
+  font-size: 24px;
 }

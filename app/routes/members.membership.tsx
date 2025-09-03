@@ -102,7 +102,7 @@ const TableDuesSuggestions: React.FC = ({}) => {
           <td>
             <b>Income</b>
           </td>
-          <td>
+          <td className={paddingClasses}>
             <b>
               <span>Suggested range (but it's up to you)</span>
             </b>
@@ -248,7 +248,7 @@ const SectionScholarship: React.FC = ({}) => {
       <b>Paying $10/month would be a financial hardship for me because:</b>
       {/* TODO: Post to /members/users/{user_id}/scholarship_request or whichever new route */}
       <form>
-        <Textarea className="border-2 border-gray-300" />
+        <textarea className="w-full max-w-full min-h-10 border-2 border-gray-300 resize" />
         <div className="pt-3">
           <Button color="dark/primary">Submit</Button>
           {/* <Button color="light">Submit</Button> */}
@@ -274,7 +274,7 @@ const SectionCancelMembership: React.FC = ({}) => {
 
 export default function MembersMembership(): React.ReactElement {
   return (
-    <div className="space-y-8  max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-4xl mx-auto">
       <Heading id={HeaderId.ManageMembership} level={1} />
       <SectionTableOfContents />
       <Heading id={HeaderId.UpdateDues} level={2} />

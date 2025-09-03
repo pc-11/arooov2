@@ -5,6 +5,8 @@ import { Input } from "../../components/ui-toolkit/input";
 import { Textarea } from "../../components/ui-toolkit/textarea";
 import { Fieldset, Legend } from "../../components/ui-toolkit/fieldset";
 
+import clsx from "clsx";
+
 // TODO: The existing form fields seem to derive from some kind of
 // unpacking of a nested structure of some kind - unclear if Supabase
 // form submission works similarly - using an enum here to
@@ -89,14 +91,22 @@ const FormField: React.FC<FormFieldProps> = ({
   ...fieldProps
 }) => {
   const textStylingClasses =
-    "text-black bg-white font-normal border-1 border-gray-400";
+    "text-black bg-white font-normal border-1 border-gray-400 min-w-80";
   var textField = (
-    <textarea className={textStylingClasses} {...fieldProps}>
-      {value}
-    </textarea>
+    <textarea
+      className={clsx("w-full max-w-4xl min-h-10 resize", textStylingClasses)}
+      defaultValue={value}
+      {...fieldProps}
+    />
   );
   if (type == "text") {
-    textField = <input className={textStylingClasses} {...fieldProps} />;
+    textField = (
+      <input
+        className={textStylingClasses}
+        defaultValue={value}
+        {...fieldProps}
+      />
+    );
   }
   var optionalCheckbox = optional ? <FormCheckbox {...optional} /> : <div />;
 
