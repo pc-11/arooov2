@@ -19,7 +19,7 @@ import {
 interface Sponsor {}
 interface Comment {}
 
-interface Applications {
+interface Application {
   name: string;
   submitted: Date;
   sponsors: Sponsor[];
@@ -28,7 +28,7 @@ interface Applications {
   noVotes: number;
 }
 
-const applications: Applications[] = [
+const fakeApplications: Application[] = [
   {
     name: "Alice",
     submitted: new Date("2024-07-29"),
@@ -72,7 +72,7 @@ const applications: Applications[] = [
 ];
 
 // Add calculated / pseudo-columns here.
-type SortableKeys = keyof Applications | "enoughVotes";
+type SortableKeys = keyof Application | "enoughVotes";
 
 const tableHeaders: { key: SortableKeys; label: string }[] = [
   { key: "name", label: "Name" },
@@ -84,7 +84,18 @@ const tableHeaders: { key: SortableKeys; label: string }[] = [
   { key: "noVotes", label: "No" },
 ];
 
-const SectionApplicationsTable: React.FC = ({}) => {
+interface ApplicationTableProps {
+  applications: Application[];
+
+  simplifyEntryDisplay?: boolean;
+}
+
+// SectionApplicationsTable is an interactive table for
+// sorting and viewing applications
+const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
+  applications,
+  ...props
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -95,6 +106,7 @@ const SectionApplicationsTable: React.FC = ({}) => {
     return yesVotes >= 4 || noVotes > 1;
   };
 
+  // Given a sortConfig, orders the applications
   const processedApplications = useMemo(() => {
     const sortedApps = [...applications];
     if (sortConfig !== null) {
@@ -106,8 +118,8 @@ const SectionApplicationsTable: React.FC = ({}) => {
           aValue = hasEnoughVotes(a.yesVotes, a.noVotes);
           bValue = hasEnoughVotes(b.yesVotes, b.noVotes);
         } else {
-          aValue = a[sortConfig.key as keyof Applications];
-          bValue = b[sortConfig.key as keyof Applications];
+          aValue = a[sortConfig.key as keyof Application];
+          bValue = b[sortConfig.key as keyof Application];
         }
 
         if (aValue < bValue) {
@@ -120,6 +132,8 @@ const SectionApplicationsTable: React.FC = ({}) => {
       });
     }
 
+    // Transforms the data of the table into user-displayable formats,
+    // which are also used for sorting and filtering.
     return sortedApps.map((app) => ({
       name: app.name,
       submitted: app.submitted.toLocaleDateString("en-US", {
@@ -137,6 +151,7 @@ const SectionApplicationsTable: React.FC = ({}) => {
     }));
   }, [sortConfig]);
 
+  // Given a searchQuery, filters the applications
   const filteredApplications = useMemo(() => {
     if (!searchQuery) {
       return processedApplications;
@@ -149,6 +164,7 @@ const SectionApplicationsTable: React.FC = ({}) => {
     );
   }, [processedApplications, searchQuery]);
 
+  // Given a sortConfig, toggles the sort direction
   const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
     if (
@@ -161,6 +177,7 @@ const SectionApplicationsTable: React.FC = ({}) => {
     setSortConfig({ key, direction });
   };
 
+  // Given a sortConfig, returns the correct UI indicator
   const getSortIndicator = (key: SortableKeys) => {
     if (!sortConfig || sortConfig.key !== key) {
       return null;
@@ -222,10 +239,20 @@ const SectionApplicationsTable: React.FC = ({}) => {
           ))}
         </TableBody>
       </table>
+
       <p className="text-sm text-gray-500 mt-2">
-        Showing 1 to {filteredApplications.length} of{" "}
-        {filteredApplications.length} entries (filtered from{" "}
-        {applications.length} total entries)
+        {props.simplifyEntryDisplay ?? false ? (
+          <span>
+            Displaying {filteredApplications.length} of {applications.length}{" "}
+            applications.
+          </span>
+        ) : (
+          <span>
+            Showing 1 to {filteredApplications.length} of{" "}
+            {filteredApplications.length} entries (filtered from{" "}
+            {applications.length} total entries)
+          </span>
+        )}
       </p>
     </div>
   );
@@ -235,7 +262,10 @@ export default function MembersApplications(): React.ReactElement {
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <Heading level={1}>Submitted Applications</Heading>
-      <SectionApplicationsTable />
+      <SectionApplicationsTable
+        applications={fakeApplications}
+        simplifyEntryDisplay={true}
+      />
       <Heading level={2}>Applicant Email Addresses</Heading>
     </div>
   );
