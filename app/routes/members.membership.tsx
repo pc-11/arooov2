@@ -56,7 +56,7 @@ const SectionTableOfContents: React.FC = ({}) => {
     headers: headers,
   };
 
-  return <TableOfContents<HeaderId> {...props}></TableOfContents>;
+  return <TableOfContents<HeaderId> {...props} />;
 };
 
 const TableDuesSuggestions: React.FC = ({}) => {
@@ -135,7 +135,7 @@ const SectionCurrentDues: React.FC = ({}) => {
         Your current Stripe subscription is <b>${amount}</b> per month, and your
         status is <b>{status}</b>.
       </p>
-      <StripeDropdown></StripeDropdown>
+      <StripeDropdown />
       <p>
         Note: If you would like to update the card that is on file without
         changing your dues amount, leave the dues amount dropdown where it is
@@ -162,10 +162,10 @@ const SectionMembershipDues: React.FC = ({}) => {
         payment date. This is ok!)
       </p>
       <br />
-      <SectionCurrentDues></SectionCurrentDues>
+      <SectionCurrentDues />
       <br />
       <Heading id={HeaderId.Suggestions} level={3} />
-      <TableDuesSuggestions></TableDuesSuggestions>
+      <TableDuesSuggestions />
       <br />
       <p>
         Any dues you pay above $10 / month can be counted as a tax-deductible
@@ -182,8 +182,7 @@ const SectionMembershipDues: React.FC = ({}) => {
         If you want to use your company's donation matching program, you may
         want to set up $10 / month dues here and an additional monthly recurring
         donation through your company's system. If you'd like help setting up
-        donation matching, email{" "}
-        <Email emailStr="board@doubleunion.org"></Email>.
+        donation matching, email <Email emailStr="board@doubleunion.org" />
       </p>
     </div>
   );
@@ -206,7 +205,7 @@ const SectionScholarship: React.FC = ({}) => {
         ask for documentation or proof of financial need, and we won't share
         your scholarship application with anyone else. If you don't hear back
         about your application within 2 weeks, please email{" "}
-        <Email emailStr="board@doubleunion.org"></Email>.
+        <Email emailStr="board@doubleunion.org" />
       </p>
       <br />
       <p>Keep in mind the following: </p>
@@ -250,7 +249,7 @@ const SectionScholarship: React.FC = ({}) => {
       <b>Paying $10/month would be a financial hardship for me because:</b>
       {/* TODO: Post to /members/users/{user_id}/scholarship_request or whichever new route */}
       <form>
-        <Textarea className="border-2 border-gray-300"></Textarea>
+        <Textarea className="border-2 border-gray-300" />
         <div className="pt-3">
           <Button color="dark/primary">Submit</Button>
           {/* <Button color="light">Submit</Button> */}
@@ -267,8 +266,8 @@ const SectionCancelMembership: React.FC = ({}) => {
         If you'd like to cancel your Double Union membership, click{" "}
         <Link href="./cancel">here</Link>. If you have other questions about
         dues and membership, please email{" "}
-        <Email emailStr="membership@doubleunion.org"></Email> to reach out to
-        the membership coordinators.
+        <Email emailStr="membership@doubleunion.org" /> to reach out to the
+        membership coordinators.
       </p>
     </div>
   );

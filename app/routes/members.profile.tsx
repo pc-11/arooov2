@@ -72,7 +72,7 @@ const FormCheckbox: React.FC<OptionalFieldProps> = ({
         type="checkbox"
         name={checkboxName}
         value={value}
-      ></input>
+      />
       &nbsp;
       {label}
     </div>
@@ -96,13 +96,9 @@ const FormField: React.FC<FormFieldProps> = ({
     </textarea>
   );
   if (type == "text") {
-    textField = <input className={textStylingClasses} {...fieldProps}></input>;
+    textField = <input className={textStylingClasses} {...fieldProps} />;
   }
-  var optionalCheckbox = optional ? (
-    <FormCheckbox {...optional}></FormCheckbox>
-  ) : (
-    <div></div>
-  );
+  var optionalCheckbox = optional ? <FormCheckbox {...optional} /> : <div />;
 
   return (
     <Fieldset className="mb-2">
@@ -112,7 +108,7 @@ const FormField: React.FC<FormFieldProps> = ({
         </label>
       </Legend>
       {textField}
-      {accessory ?? <div></div>}
+      {accessory ?? <div />}
       {optionalCheckbox}
     </Fieldset>
   );
@@ -148,35 +144,35 @@ const SectionProfileForm: React.FC = () => {
         checkboxId="user_profile_show_name_on_site"
         checkboxLabel={label}
         checkboxName="user_profile[show_name_on_site]"
-      ></FormCheckbox>
+      />
       <FormField
         id="user_name"
         label="Name"
         type="text"
         name="user[name]"
         value="Name"
-      ></FormField>
+      />
       <FormField
         id="user_pronounceable_name"
         label="How to pronounce your name (used by automated voice for door entry system)"
         type="text"
         name="user[pronounceable_name]"
         value="Pronounceable Name"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_pronouns"
         label="Pronouns"
         type="text"
         name="user[pronounceable_name]"
         value="Pronouns"
-      ></FormField>
+      />
       <FormField
         id="user_email"
         label="Email displayed on member profile"
         type="text"
         name="user[email]"
         value="Email"
-      ></FormField>
+      />
       {/* TODO: factor this out to a separate fragment*/}
       <strong>Google-friendly email</strong>
       <p>my_email_in_text@gmail.com</p>
@@ -196,42 +192,42 @@ const SectionProfileForm: React.FC = () => {
         type="text"
         name="user[profile_attributes][twitter]"
         value="Twitter"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_facebook"
         label="Facebook"
         type="text"
         name="user[profile_attributes][facebook]"
         value="Facebook"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_website"
         label="Website"
         type="text"
         name="user[profile_attributes][website]"
         value="Website"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_linkedin"
         label="LinkedIn"
         type="text"
         name="user[profile_attributes][linkedin]"
         value="LinkedIn"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_blog"
         label="Blog"
         type="text"
         name="user[profile_attributes][blog]"
         value="Blog"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_summary"
         label="Tell us a little about yourself!"
         type="text"
         name="user[profile_attributes][summary]"
         value="Summary"
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_reasons"
         label="Why are you interested in joining Double Union?"
@@ -242,7 +238,7 @@ const SectionProfileForm: React.FC = () => {
           checkboxId: "user_profile_attributes_show_reasons",
           checkboxName: "user[profile_attributes][show_reasons]",
         }}
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_projects"
         label="What would you like to work on in the space?"
@@ -253,7 +249,7 @@ const SectionProfileForm: React.FC = () => {
           checkboxId: "user_profile_attributes_show_projects",
           checkboxName: "user[profile_attributes][show_projects]",
         }}
-      ></FormField>
+      />
       <FormField
         id="user_profile_attributes_skills"
         label="What skills are you most interested in learning, improving, and/or teaching?"
@@ -264,7 +260,7 @@ const SectionProfileForm: React.FC = () => {
           checkboxId: "user_profile_attributes_show_skills",
           checkboxName: "user[profile_attributes][show_skills]",
         }}
-      ></FormField>
+      />
 
       <FormField
         id="user_profile_attributes_show_gravatar_email"
@@ -277,7 +273,7 @@ const SectionProfileForm: React.FC = () => {
             * override email for <a href="http://gravatar.com">Gravatar</a>
           </span>
         }
-      ></FormField>
+      />
       <Button color="dark/primary" className="mt-2 mb-2">
         Save profile
       </Button>
@@ -305,8 +301,8 @@ export default function MembersProfile() {
     <div className="space-y-8 max-w-4xl mx-auto">
       <Heading level={1}>Edit Profile</Heading>
       <Heading level={2}>Authentication</Heading>
-      <SectionAuthentication></SectionAuthentication>
-      <SectionProfileForm></SectionProfileForm>
+      <SectionAuthentication />
+      <SectionProfileForm />
     </div>
   );
 }
