@@ -1,4 +1,3 @@
-import { Fieldset, Legend } from "../../components/ui-toolkit/fieldset";
 import { Heading } from "../../components/ui-toolkit/heading";
 import {
   Table,

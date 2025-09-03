@@ -5,6 +5,13 @@ import { Input } from "../../components/ui-toolkit/input";
 import { Textarea } from "../../components/ui-toolkit/textarea";
 import { Fieldset, Legend } from "../../components/ui-toolkit/fieldset";
 
+import { Email } from "../../components/core/email";
+
+import {
+  MembersPublicListLink,
+  GravatarSupportLink,
+} from "components/core/links";
+
 import clsx from "clsx";
 
 // TODO: The existing form fields seem to derive from some kind of
@@ -108,7 +115,7 @@ const FormField: React.FC<FormFieldProps> = ({
       />
     );
   }
-  var optionalCheckbox = optional ? <FormCheckbox {...optional} /> : <div />;
+  var optionalCheckbox = optional ? <FormCheckbox {...optional} /> : <></>;
 
   return (
     <Fieldset className="mb-2">
@@ -118,7 +125,7 @@ const FormField: React.FC<FormFieldProps> = ({
         </label>
       </Legend>
       {textField}
-      {accessory ?? <div />}
+      {accessory ?? <></>}
       {optionalCheckbox}
     </Fieldset>
   );
@@ -133,9 +140,9 @@ const SectionProfileForm: React.FC = () => {
   var label = (
     <div>
       Show name, website, and{" "}
-      <a href="https://en.gravatar.com/support/what-is-gravatar/">Gravatar</a>{" "}
-      (if you've set up a Gravatar) on{" "}
-      <a href="/membership#current-members">DU public website</a>?
+      <GravatarSupportLink>Gravatar</GravatarSupportLink> (if you've set up a
+      Gravatar) on{" "}
+      <MembersPublicListLink>DU public website</MembersPublicListLink>
     </div>
   );
 
@@ -192,8 +199,8 @@ const SectionProfileForm: React.FC = () => {
         uses for your Google Drive, Google Calendar, and Google Groups access
         (for example, if you've lost access to that Google account or are
         switching to using a new Google account), please email the Membership
-        Coordinators (membership@doubleunion.org). They will need to manually
-        update your account in those systems.
+        Coordinators <Email emailStr="membership@doubleunion.org" />. They will
+        need to manually update your account in those systems.
       </div>
       <br />
       <FormField

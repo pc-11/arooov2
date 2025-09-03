@@ -104,7 +104,7 @@ const TableDuesSuggestions: React.FC = ({}) => {
           </td>
           <td className={paddingClasses}>
             <b>
-              <span>Suggested range (but it's up to you)</span>
+              <>Suggested range (but it's up to you)</>
             </b>
           </td>
         </tr>
