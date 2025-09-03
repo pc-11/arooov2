@@ -1,10 +1,15 @@
 import { Badge } from "../../components/ui-toolkit/badge";
 import { Button } from "../../components/ui-toolkit/button";
 import { Divider } from "../../components/ui-toolkit/divider";
-import { Heading } from "../../components/ui-toolkit/heading";
 import { Link } from "../../components/ui-toolkit/link";
 import { Text } from "../../components/ui-toolkit/text";
 import { Textarea } from "../../components/ui-toolkit/textarea";
+
+import { Email } from "../../components/core/email";
+import { HeadingComponentUsing } from "../../components/core/heading";
+import { StripeDropdown } from "components/core/stripe-dropdown";
+import { TableOfContents } from "components/core/table-of-contents";
+
 import clsx from "clsx";
 
 /*
@@ -19,49 +24,6 @@ Overall file TODOs:
  */
 
 // TODO: Refactor this to a form component
-function componentStripeDropdown(): React.ReactElement {
-  const hardcodedCurrentDues: string = "medium_monthly";
-  const hardcodedStripeData = [
-    { id: "15_monthly", amount: 15.0 },
-    { id: "20_monthly", amount: 20.0 },
-    { id: "medium_monthly", amount: 25.0 },
-    { id: "30_monthly", amount: 30.0 },
-    { id: "35_monthly", amount: 35.0 },
-    { id: "40_monthly", amount: 40.0 },
-    { id: "45_monthly", amount: 45.0 },
-    { id: "large_monthly", amount: 50.0 },
-    { id: "75_monthly", amount: 75.0 },
-    { id: "extra_large_monthly", amount: 100.0 },
-  ];
-  const dollarAsText = (amount: number) => {
-    return `${Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount)} USD Monthly`;
-  };
-  return (
-    <div className="pt-3 pb-3">
-      {/* TODO: Post to /members/users/{user_id}/dues or whichever new route */}
-      <form id="dues-form" className="flex flexcol">
-        {/* TODO: Migrate select+option to whatever the selectMenu equivalent is in TailwindPlus? Not currently copied over */}
-        <select className="bg-white rounded-sm p-2">
-          {hardcodedStripeData.map((item) => (
-            <option key={item.id} value={item.amount}>
-              {dollarAsText(item.amount)}
-            </option>
-          ))}
-          {/* <ListboxOption key=""></ListboxOption> */}
-        </select>
-        <div className="min-w-5"> </div>
-        <Button color="dark/primary">Update Dues</Button>
-      </form>
-    </div>
-  );
-}
-
-function componentEmail(email_str: string): React.ReactElement {
-  return <Link href={`mailto:${email_str}`}>{email_str}</Link>;
-}
 
 enum HeaderId {
   ManageMembership = "manage-membership",
@@ -82,49 +44,46 @@ const headers: Record<HeaderId, string> = {
   [HeaderId.CancelMembership]: "Cancel Your Membership",
 };
 
-function sectionTableOfContents(header_ids: HeaderId[]): React.ReactElement {
-  return (
-    <div>
-      <ul className="list-disc pl-7">
-        {header_ids.map((header_id) => (
-          <li>
-            <Link href={`#${header_id}`}>{headers[header_id]}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+const Heading = HeadingComponentUsing<HeaderId>(headers);
 
-function tableDuesSuggestions(): React.ReactElement {
+const SectionTableOfContents: React.FC = ({}) => {
+  var props = {
+    headerIds: [
+      HeaderId.UpdateDues,
+      HeaderId.ApplyScholarShip,
+      HeaderId.CancelMembership,
+    ],
+    headers: headers,
+  };
+
+  return <TableOfContents<HeaderId> {...props}></TableOfContents>;
+};
+
+const TableDuesSuggestions: React.FC = ({}) => {
   interface IncomeSuggestions {
     range: string;
-    suggested_amount: React.ReactElement;
+    suggestedAmount: React.ReactElement;
   }
   const suggestions: IncomeSuggestions[] = [
     {
-      range: "Income",
-      suggested_amount: <span>Suggested range (but it's up to you)</span>,
-    },
-    {
       range: "Below $50,000",
-      suggested_amount: <span>$0 - $10</span>,
+      suggestedAmount: <span>$0 - $10</span>,
     },
     {
       range: "$50,000-$100,000",
-      suggested_amount: <span>$15-$25</span>,
+      suggestedAmount: <span>$15-$25</span>,
     },
     {
       range: "$100,000-$150,000",
-      suggested_amount: <span>$75</span>,
+      suggestedAmount: <span>$75</span>,
     },
     {
       range: "$150,000-$200,000",
-      suggested_amount: <span>$100</span>,
+      suggestedAmount: <span>$100</span>,
     },
     {
       range: "$200,000+",
-      suggested_amount: (
+      suggestedAmount: (
         <span>
           $100 +{" "}
           <Link href="/support/">
@@ -137,38 +96,33 @@ function tableDuesSuggestions(): React.ReactElement {
 
   const paddingClasses: string = "pl-20";
 
-  const tableRow = (
-    row: IncomeSuggestions,
-    index: number
-  ): React.ReactElement => {
-    if (index == 0) {
-      return (
-        <thead>
-          <tr>
-            <td>
-              <b>{row.range}</b>
-            </td>
-            <td className={paddingClasses}>
-              <b>{row.suggested_amount}</b>
-            </td>
-          </tr>
-        </thead>
-      );
-    }
-    return (
-      <tbody>
+  return (
+    <table>
+      <thead>
         <tr>
-          <td>{row.range}</td>
-          <td className={paddingClasses}>{row.suggested_amount}</td>
+          <td>
+            <b>Income</b>
+          </td>
+          <td>
+            <b>
+              <span>Suggested range (but it's up to you)</span>
+            </b>
+          </td>
         </tr>
+      </thead>
+      <tbody>
+        {suggestions.map((row, index) => (
+          <tr key={index}>
+            <td>{row.range}</td>
+            <td className={paddingClasses}>{row.suggestedAmount}</td>
+          </tr>
+        ))}
       </tbody>
-    );
-  };
+    </table>
+  );
+};
 
-  return <table>{suggestions.map((row, index) => tableRow(row, index))}</table>;
-}
-
-function sectionCurrentDues(): React.ReactElement {
+const SectionCurrentDues: React.FC = ({}) => {
   // TODO: Replace with actual dues status from Stripe or Supabase
   const active: boolean = false;
   const amount: string = "xx.xx";
@@ -176,12 +130,12 @@ function sectionCurrentDues(): React.ReactElement {
 
   return (
     <div>
-      <Heading level={3}>{headers[HeaderId.CurrentDues]}</Heading>
+      <Heading id={HeaderId.CurrentDues} level={3} />
       <p>
         Your current Stripe subscription is <b>${amount}</b> per month, and your
         status is <b>{status}</b>.
       </p>
-      {componentStripeDropdown()}
+      <StripeDropdown></StripeDropdown>
       <p>
         Note: If you would like to update the card that is on file without
         changing your dues amount, leave the dues amount dropdown where it is
@@ -190,9 +144,9 @@ function sectionCurrentDues(): React.ReactElement {
       </p>
     </div>
   );
-}
+};
 
-function sectionMembershipDues(): React.ReactElement {
+const SectionMembershipDues: React.FC = ({}) => {
   return (
     <div>
       <p>
@@ -208,12 +162,10 @@ function sectionMembershipDues(): React.ReactElement {
         payment date. This is ok!)
       </p>
       <br />
-      {sectionCurrentDues()}
+      <SectionCurrentDues></SectionCurrentDues>
       <br />
-      <Heading id={HeaderId.Suggestions} level={3}>
-        {headers[HeaderId.Suggestions]}
-      </Heading>
-      {tableDuesSuggestions()}
+      <Heading id={HeaderId.Suggestions} level={3} />
+      <TableDuesSuggestions></TableDuesSuggestions>
       <br />
       <p>
         Any dues you pay above $10 / month can be counted as a tax-deductible
@@ -230,13 +182,14 @@ function sectionMembershipDues(): React.ReactElement {
         If you want to use your company's donation matching program, you may
         want to set up $10 / month dues here and an additional monthly recurring
         donation through your company's system. If you'd like help setting up
-        donation matching, email {componentEmail("board@doubleunion.org")}.
+        donation matching, email{" "}
+        <Email emailStr="board@doubleunion.org"></Email>.
       </p>
     </div>
   );
-}
+};
 
-function sectionScholarship(): React.ReactElement {
+const SectionScholarship: React.FC = ({}) => {
   return (
     <div>
       <p>
@@ -253,7 +206,7 @@ function sectionScholarship(): React.ReactElement {
         ask for documentation or proof of financial need, and we won't share
         your scholarship application with anyone else. If you don't hear back
         about your application within 2 weeks, please email{" "}
-        {componentEmail("board@doubleunion.org")}.
+        <Email emailStr="board@doubleunion.org"></Email>.
       </p>
       <br />
       <p>Keep in mind the following: </p>
@@ -305,45 +258,33 @@ function sectionScholarship(): React.ReactElement {
       </form>
     </div>
   );
-}
+};
 
-function sectionCancelMembership(): React.ReactElement {
+const SectionCancelMembership: React.FC = ({}) => {
   return (
     <div>
       <p>
         If you'd like to cancel your Double Union membership, click{" "}
         <Link href="./cancel">here</Link>. If you have other questions about
         dues and membership, please email{" "}
-        {componentEmail("membership@doubleunion.org")} to reach out to the
-        membership coordinators.
+        <Email emailStr="membership@doubleunion.org"></Email> to reach out to
+        the membership coordinators.
       </p>
     </div>
   );
-}
+};
 
 export default function MembersMembership(): React.ReactElement {
   return (
     <div className="space-y-8">
-      <Heading id={HeaderId.ManageMembership} level={1}>
-        {headers[HeaderId.ManageMembership]}
-      </Heading>
-      {sectionTableOfContents([
-        HeaderId.UpdateDues,
-        HeaderId.ApplyScholarShip,
-        HeaderId.CancelMembership,
-      ])}
-      <Heading id={HeaderId.UpdateDues} level={2}>
-        {headers[HeaderId.UpdateDues]}
-      </Heading>
-      {sectionMembershipDues()}
-      <Heading id={HeaderId.ApplyScholarShip} level={2}>
-        {headers[HeaderId.ApplyScholarShip]}
-      </Heading>
-      {sectionScholarship()}
-      <Heading id={HeaderId.CancelMembership} level={2}>
-        {headers[HeaderId.CancelMembership]}
-      </Heading>
-      {sectionCancelMembership()}
+      <Heading id={HeaderId.ManageMembership} level={1} />
+      <SectionTableOfContents />
+      <Heading id={HeaderId.UpdateDues} level={2} />
+      <SectionMembershipDues />
+      <Heading id={HeaderId.ApplyScholarShip} level={2} />
+      <SectionScholarship />
+      <Heading id={HeaderId.CancelMembership} level={2} />
+      <SectionCancelMembership />
     </div>
   );
 }
