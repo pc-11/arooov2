@@ -23,6 +23,12 @@ a:hover {
   color: #23527c;
   text-decoration: underline;
 }
+a.navbar {
+  color: white;
+}
+a.navbar:hover {
+  color: rgb(245, 209, 209);
+}
 h1,
 h2,
 h3,

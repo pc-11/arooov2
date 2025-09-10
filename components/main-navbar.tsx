@@ -1,25 +1,41 @@
-'use client'
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, ChevronDownIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline'
+"use client";
+import { useLocation } from "react-router";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+  ArrowRightStartOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 
 export function MainNavbar() {
-   const navigationItems = [
-    { name: 'Home', href: '/members', current: true },
-    { name: 'Applications', href: '/members/applications', current: false },
-    { name: 'Edit Profile', href: '/members/profile', current: false },
-    { name: 'Manage Membership', href: '/members/membership', current: false },
-  ]
+  let location = useLocation();
+
+  const navigationItems = [
+    { name: "Home", href: "/members" },
+    { name: "Applications", href: "/members/applications" },
+    { name: "Edit Profile", href: "/members/profile" },
+    { name: "Manage Membership", href: "/members/membership" },
+  ];
 
   const socialLinks = [
-    { name: 'Blog', href: 'https://doubleunion.tumblr.com' },
-    { name: 'Instagram', href: 'https://www.instagram.com/doubleunionsf' },
-    { name: 'Facebook', href: 'https://www.facebook.com/doubleunion' },
-    { name: 'Eventbrite', href: 'https://doubleunionsf.eventbrite.com' },
-  ]
+    { name: "Blog", href: "https://doubleunion.tumblr.com" },
+    { name: "Instagram", href: "https://www.instagram.com/doubleunionsf" },
+    { name: "Facebook", href: "https://www.facebook.com/doubleunion" },
+    { name: "Eventbrite", href: "https://doubleunionsf.eventbrite.com" },
+  ];
 
   return (
     <Disclosure as="nav" className="bg-primary w-full shadow-sm">
-      <div className="w-full">
+      <div className="navbar w-full">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl flex h-16 justify-between">
             <div className="flex">
@@ -32,7 +48,9 @@ export function MainNavbar() {
                       src="/double_union_logo.png"
                       className="h-8 w-auto"
                     />
-                    <span className="sm:block text-white font-medium">Double Union</span>
+                    <span className="sm:block text-white font-medium">
+                      Double Union
+                    </span>
                     <ChevronDownIcon className="h-4 w-4 text-white" />
                   </MenuButton>
                   <MenuItems
@@ -45,7 +63,7 @@ export function MainNavbar() {
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block px-4 py-2 text-sm text-white data-focus:bg-[#a01f57] data-focus:outline-none"
+                          className="navbar block px-4 py-2 text-sm text-white data-focus:bg-[#a01f57] data-focus:outline-none"
                         >
                           {link.name}
                         </a>
@@ -60,10 +78,10 @@ export function MainNavbar() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className={`inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
-                      item.current
-                        ? 'border-white text-white'
-                        : 'border-transparent text-white hover:border-gray-200 hover:text-gray-200'
+                    className={`navbar inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
+                      item.href == location.pathname
+                        ? "border-white text-white"
+                        : "border-transparent text-white hover:border-gray-200 hover:text-gray-200"
                     }`}
                   >
                     {item.name}
@@ -74,7 +92,10 @@ export function MainNavbar() {
             <div className="hidden md:ml-6 md:flex md:items-center gap-4">
               {/* Profile Section */}
               <div className="flex items-center gap-3">
-                <a href="/members/profile" className="flex items-center gap-2 text-white hover:text-gray-200 px-2 py-1 rounded">
+                <a
+                  href="/members/profile"
+                  className="navbar flex items-center gap-2 text-white hover:text-gray-200 px-2 py-1 rounded"
+                >
                   <img
                     alt="User Avatar"
                     src="/placeholder-avatar.jpg"
@@ -83,7 +104,7 @@ export function MainNavbar() {
                 </a>
                 <a
                   href="/logout"
-                  className="text-white hover:text-gray-200 p-1 rounded focus:outline-none"
+                  className="navbar text-white hover:text-gray-200 p-1 rounded focus:outline-none"
                 >
                   <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
                 </a>
@@ -94,8 +115,14 @@ export function MainNavbar() {
               <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-[#a01f57] hover:text-white focus:ring-2 focus:ring-white focus:outline-none focus:ring-inset">
                 <span className="absolute -inset-0.5" />
                 <span className="sr-only">Open main menu</span>
-                <Bars3Icon aria-hidden="true" className="block h-6 w-6 group-data-open:hidden" />
-                <XMarkIcon aria-hidden="true" className="hidden h-6 w-6 group-data-open:block" />
+                <Bars3Icon
+                  aria-hidden="true"
+                  className="block h-6 w-6 group-data-open:hidden"
+                />
+                <XMarkIcon
+                  aria-hidden="true"
+                  className="hidden h-6 w-6 group-data-open:block"
+                />
               </DisclosureButton>
             </div>
           </div>
@@ -110,10 +137,10 @@ export function MainNavbar() {
                 key={item.name}
                 as="a"
                 href={item.href}
-                className={`block border-l-4 py-2 pr-4 pl-3 text-base font-medium ${
-                  item.current
-                    ? 'border-white bg-[#a01f57] text-white'
-                    : 'border-transparent text-white hover:border-gray-200 hover:bg-[#a01f57] hover:text-white'
+                className={`navbar block border-l-4 py-2 pr-4 pl-3 text-base font-medium ${
+                  item.href == location.pathname
+                    ? "border-white bg-[#a01f57] text-white"
+                    : "border-transparent text-white hover:border-gray-200 hover:bg-[#a01f57] hover:text-white"
                 }`}
               >
                 {item.name}
@@ -131,11 +158,13 @@ export function MainNavbar() {
               </div>
               <div className="ml-3">
                 <div className="text-base font-medium text-white">Member</div>
-                <div className="text-sm font-medium text-white/80">user@doubleunion.org</div>
+                <div className="text-sm font-medium text-white/80">
+                  user@doubleunion.org
+                </div>
               </div>
               <a
                 href="/logout"
-                className="relative ml-auto shrink-0 rounded-full p-1 text-white hover:text-gray-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary focus:outline-none"
+                className="navbar relative ml-auto shrink-0 rounded-full p-1 text-white hover:text-gray-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary focus:outline-none"
               >
                 <span className="absolute -inset-1.5" />
                 <span className="sr-only">Sign out</span>
@@ -146,5 +175,5 @@ export function MainNavbar() {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
+  );
 }

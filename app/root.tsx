@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -6,9 +7,11 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import type { Session } from "@supabase/supabase-js";
 
 import type { Route } from "./+types/root";
 import { MainNavbar } from "../components/main-navbar";
+import { supabase, Auth } from "../components/core/auth";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -43,12 +46,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const [session, setSession] = useState<Session | null>(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  let skipAuth = true;
+
   return (
     <div className="min-h-screen bg-[#ebebeb]">
       <div className="mx-auto">
         <MainNavbar />
         <main className="px-4 sm:px-6 lg:px-8 py-8">
-          <Outlet />
+          {(session && session.user) || skipAuth ? <Outlet /> : <Auth />}
         </main>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { useLoaderData } from "react-router";
+
 import { Heading } from "../../components/ui-toolkit/heading";
 import { Text } from "../../components/ui-toolkit/text";
 import { Button } from "../../components/ui-toolkit/button";
@@ -5,7 +7,9 @@ import { Input } from "../../components/ui-toolkit/input";
 import { Textarea } from "../../components/ui-toolkit/textarea";
 import { Fieldset, Legend } from "../../components/ui-toolkit/fieldset";
 
+import { supabase } from "../../components/core/auth";
 import { Email } from "../../components/core/email";
+import type { Database, Tables } from "../../database.types";
 
 import {
   MembersPublicListLink,
@@ -14,27 +18,7 @@ import {
 
 import clsx from "clsx";
 
-// TODO: The existing form fields seem to derive from some kind of
-// unpacking of a nested structure of some kind - unclear if Supabase
-// form submission works similarly - using an enum here to
-// decouple the form fields from the previous implementation.
-// enum FormField {
-//   UserName = "user[name]",
-//   UserPronounceableName = "user[pronounceable_name]",
-//   ProfileAttributes = "user[profile_attributes]",
-//   UserEmail = "user[email]",
-//   Pronouns = "user[profile_attributes][pronouns]",
-//   Twitter = "user[profile_attributes][twitter]",
-//   Facebook = "user[profile_attributes][facebook]",
-//   Website = "user[profile_attributes][website]",
-//   LinkedIn = "user[profile_attributes][linkedin]",
-//   Blog = "user[profile_attributes][blog]",
-//   Summary = "user[profile_attributes][summary]",
-//   ShowReasons = "user[profile_attributes][show_reasons]",
-//   Projects = "user[profile_attributes][projects]",
-//   Skills = "user[profile_attributes][skills]",
-//   GravatarEmail = "user[profile_attributes][gravatar_email]",
-// }
+type Profile = Tables<"profile">;
 
 interface OptionalFieldProps {
   checkboxId: string;
@@ -81,6 +65,7 @@ const FormCheckbox: React.FC<OptionalFieldProps> = ({
         type="checkbox"
         name={checkboxName}
         value={value}
+        defaultChecked={checkboxValue == "1"}
       />
       &nbsp;
       {label}
@@ -131,7 +116,7 @@ const FormField: React.FC<FormFieldProps> = ({
   );
 };
 
-const SectionProfileForm: React.FC = () => {
+const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   // UI Opinion: There should probably be a header or other separation
   // of the authentication + form fields, but for parity this is
   // not present in the original page.
@@ -161,38 +146,39 @@ const SectionProfileForm: React.FC = () => {
         checkboxId="user_profile_show_name_on_site"
         checkboxLabel={label}
         checkboxName="user_profile[show_name_on_site]"
+        checkboxValue={profile.public_member ? "1" : "0"}
       />
       <FormField
         id="user_name"
         label="Name"
         type="text"
         name="user[name]"
-        value="Name"
+        value={profile.display_name ?? ""}
       />
       <FormField
         id="user_pronounceable_name"
         label="How to pronounce your name (used by automated voice for door entry system)"
         type="text"
         name="user[pronounceable_name]"
-        value="Pronounceable Name"
+        value={profile.pronounceable_name ?? ""}
       />
       <FormField
         id="user_profile_attributes_pronouns"
         label="Pronouns"
         type="text"
-        name="user[pronounceable_name]"
-        value="Pronouns"
+        name="user[pronouns]"
+        value={profile?.pronouns ?? ""}
       />
       <FormField
         id="user_email"
         label="Email displayed on member profile"
         type="text"
         name="user[email]"
-        value="Email"
+        value={profile.email_display ?? ""}
       />
       {/* TODO: factor this out to a separate fragment*/}
       <strong>Google-friendly email</strong>
-      <p>my_email_in_text@gmail.com</p>
+      <p>{profile.email_google}</p>
       <br />
       <div>
         If you need to also change the "Google-friendly" email address that DU
@@ -208,52 +194,53 @@ const SectionProfileForm: React.FC = () => {
         label="Twitter username"
         type="text"
         name="user[profile_attributes][twitter]"
-        value="Twitter"
+        value={profile.social_twitter ?? ""}
       />
       <FormField
         id="user_profile_attributes_facebook"
         label="Facebook"
         type="text"
         name="user[profile_attributes][facebook]"
-        value="Facebook"
+        value={profile.social_facebook ?? ""}
       />
       <FormField
         id="user_profile_attributes_website"
         label="Website"
         type="text"
         name="user[profile_attributes][website]"
-        value="Website"
+        value={profile.social_website ?? ""}
       />
       <FormField
         id="user_profile_attributes_linkedin"
         label="LinkedIn"
         type="text"
         name="user[profile_attributes][linkedin]"
-        value="LinkedIn"
+        value={profile.social_linkedin ?? ""}
       />
       <FormField
         id="user_profile_attributes_blog"
         label="Blog"
         type="text"
         name="user[profile_attributes][blog]"
-        value="Blog"
+        value={profile.social_blog ?? ""}
       />
       <FormField
         id="user_profile_attributes_summary"
         label="Tell us a little about yourself!"
-        type="text"
+        type="textarea"
         name="user[profile_attributes][summary]"
-        value="Summary"
+        value={profile.summary ?? ""}
       />
       <FormField
         id="user_profile_attributes_reasons"
         label="Why are you interested in joining Double Union?"
         type="textarea"
         name="user[profile_attributes][reasons]"
-        value="Reasons"
+        value={profile.reasons ?? ""}
         optional={{
           checkboxId: "user_profile_attributes_show_reasons",
           checkboxName: "user[profile_attributes][show_reasons]",
+          checkboxValue: profile.public_reasons ? "1" : "0",
         }}
       />
       <FormField
@@ -261,10 +248,11 @@ const SectionProfileForm: React.FC = () => {
         label="What would you like to work on in the space?"
         type="textarea"
         name="user[profile_attributes][projects]"
-        value="Projects"
+        value={profile.projects ?? ""}
         optional={{
           checkboxId: "user_profile_attributes_show_projects",
           checkboxName: "user[profile_attributes][show_projects]",
+          checkboxValue: profile.public_projects ? "1" : "0",
         }}
       />
       <FormField
@@ -272,19 +260,20 @@ const SectionProfileForm: React.FC = () => {
         label="What skills are you most interested in learning, improving, and/or teaching?"
         type="textarea"
         name="user[profile_attributes][skills]"
-        value="Skills"
+        value={profile.skills ?? ""}
         optional={{
           checkboxId: "user_profile_attributes_show_skills",
           checkboxName: "user[profile_attributes][show_skills]",
+          checkboxValue: profile.public_skills ? "1" : "0",
         }}
       />
 
       <FormField
-        id="user_profile_attributes_show_gravatar_email"
+        id="user_profile_attributes_gravatar_email"
         label="Gravatar email*"
         type="text"
-        name="user[profile_attributes][show_gravatar_email]"
-        value="Gravatar email"
+        name="user[profile_attributes][gravatar_email]"
+        value={profile.email_gravatar ?? ""}
         accessory={
           <span className="ml-2">
             * override email for <a href="http://gravatar.com">Gravatar</a>
@@ -313,13 +302,26 @@ const SectionAuthentication: React.FC = () => {
   );
 };
 
+export async function loader(): Promise<Profile | null> {
+  const { data } = await supabase.from("profile").select();
+  if (!data || data.length != 1) {
+    return null;
+  }
+
+  return data[0];
+}
+
 export default function MembersProfile() {
+  let profile: Profile | null = useLoaderData<typeof loader>();
+  if (!profile) {
+    return <ErrorBoundary />;
+  }
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <Heading level={1}>Edit Profile</Heading>
       <Heading level={2}>Authentication</Heading>
       <SectionAuthentication />
-      <SectionProfileForm />
+      <SectionProfileForm profile={profile} />
     </div>
   );
 }
