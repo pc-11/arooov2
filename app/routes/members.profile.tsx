@@ -365,7 +365,7 @@ export async function action({ request }: ProfileRoute.ActionArgs) {
 export default function MembersProfile() {
   let profile: Profile | null = useLoaderData<typeof loader>();
   if (!profile) {
-    return <ErrorBoundary />;
+    return <div></div>;
   }
   return (
     <div className="space-y-8 max-w-4xl mx-auto">

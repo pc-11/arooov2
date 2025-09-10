@@ -1,0 +1,2 @@
+
+INSERT INTO "public"."scholarships" ("id", "created_at", "recipient_user_id", "reviewed_by_user_id", "reviewed_at", "approved", "notes", "expire_at") VALUES ('b809b5be-a55c-48a9-8345-8fd4ad2a9aa3', '2025-07-23 03:17:41.702572+00', 'adf490f8-f87c-4984-af66-d6c4baf84fd7', null, null, null, null, null), ('c2a8226d-c92d-44ab-a5e1-0027235d1527', '2025-07-09 03:16:47+00', 'adf490f8-f87c-4984-af66-d6c4baf84fd7', 'a730a00f-940b-435b-93ca-13ae26474e25', '2025-07-10 03:17:13+00', null, null, '2025-07-11 03:16:43+00');

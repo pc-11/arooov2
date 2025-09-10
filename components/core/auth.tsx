@@ -8,10 +8,21 @@ import { Button } from "../ui-toolkit/button";
 import { Heading } from "../ui-toolkit/heading";
 import { Fieldset, Legend } from "../ui-toolkit/fieldset";
 
+import { GoogleOauthButton } from "./google_oauth_button";
+
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 );
+
+// console.log(supabase);
+
+export async function handleSignInWithGoogle(response) {
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: "google",
+    token: response.credential,
+  });
+}
 
 export function Auth() {
   const [email, setEmail] = useState<string>("");
@@ -51,6 +62,7 @@ export function Auth() {
           <Heading level={1} className="mb-5">
             Members and Applicants Sign In
           </Heading>
+          <GoogleOauthButton />
           <div className="mb-4">
             <Fieldset>
               <Legend className="mb-2">

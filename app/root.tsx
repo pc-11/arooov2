@@ -56,7 +56,7 @@ export default function App() {
     });
   }, []);
 
-  let skipAuth = true;
+  let skipAuth = false;
 
   return (
     <div className="min-h-screen bg-[#ebebeb]">
