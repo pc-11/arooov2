@@ -1,4 +1,5 @@
-import { useLoaderData } from "react-router";
+import { useLoaderData, useFetcher } from "react-router";
+import type { Route as ProfileRoute } from "./+types/members.profile";
 
 import { Heading } from "../../components/ui-toolkit/heading";
 import { Text } from "../../components/ui-toolkit/text";
@@ -19,6 +20,7 @@ import {
 import clsx from "clsx";
 
 type Profile = Tables<"profile">;
+type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
 
 interface OptionalFieldProps {
   checkboxId: string;
@@ -131,8 +133,10 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
     </div>
   );
 
+  const fetcher = useFetcher();
+
   return (
-    <div>
+    <fetcher.Form method="post">
       {shouldIncludeProfileHeader && <Heading level={2}>Profile</Heading>}
       <p>
         {" "}
@@ -143,37 +147,37 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         Save profile
       </Button>
       <FormCheckbox
-        checkboxId="user_profile_show_name_on_site"
+        checkboxId="public_member"
         checkboxLabel={label}
-        checkboxName="user_profile[show_name_on_site]"
+        checkboxName="public_member"
         checkboxValue={profile.public_member ? "1" : "0"}
       />
       <FormField
-        id="user_name"
+        id="display_name"
         label="Name"
         type="text"
-        name="user[name]"
+        name="display_name"
         value={profile.display_name ?? ""}
       />
       <FormField
-        id="user_pronounceable_name"
+        id="pronounceable_name"
         label="How to pronounce your name (used by automated voice for door entry system)"
         type="text"
-        name="user[pronounceable_name]"
+        name="pronounceable_name"
         value={profile.pronounceable_name ?? ""}
       />
       <FormField
-        id="user_profile_attributes_pronouns"
+        id="pronouns"
         label="Pronouns"
         type="text"
-        name="user[pronouns]"
+        name="pronouns"
         value={profile?.pronouns ?? ""}
       />
       <FormField
-        id="user_email"
+        id="email_display"
         label="Email displayed on member profile"
         type="text"
-        name="user[email]"
+        name="email_display"
         value={profile.email_display ?? ""}
       />
       {/* TODO: factor this out to a separate fragment*/}
@@ -190,89 +194,89 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
       </div>
       <br />
       <FormField
-        id="user_profile_attributes_twitter"
+        id="social_twitter"
         label="Twitter username"
         type="text"
-        name="user[profile_attributes][twitter]"
+        name="social_twitter"
         value={profile.social_twitter ?? ""}
       />
       <FormField
-        id="user_profile_attributes_facebook"
+        id="social_facebook"
         label="Facebook"
         type="text"
-        name="user[profile_attributes][facebook]"
+        name="social_facebook"
         value={profile.social_facebook ?? ""}
       />
       <FormField
-        id="user_profile_attributes_website"
+        id="social_website"
         label="Website"
         type="text"
-        name="user[profile_attributes][website]"
+        name="social_website"
         value={profile.social_website ?? ""}
       />
       <FormField
-        id="user_profile_attributes_linkedin"
+        id="social_linkedin"
         label="LinkedIn"
         type="text"
-        name="user[profile_attributes][linkedin]"
+        name="social_linkedin"
         value={profile.social_linkedin ?? ""}
       />
       <FormField
-        id="user_profile_attributes_blog"
+        id="social_blog"
         label="Blog"
         type="text"
-        name="user[profile_attributes][blog]"
+        name="social_blog"
         value={profile.social_blog ?? ""}
       />
       <FormField
-        id="user_profile_attributes_summary"
+        id="summary"
         label="Tell us a little about yourself!"
         type="textarea"
-        name="user[profile_attributes][summary]"
+        name="summary"
         value={profile.summary ?? ""}
       />
       <FormField
-        id="user_profile_attributes_reasons"
+        id="reasons"
         label="Why are you interested in joining Double Union?"
         type="textarea"
-        name="user[profile_attributes][reasons]"
+        name="reasons"
         value={profile.reasons ?? ""}
         optional={{
-          checkboxId: "user_profile_attributes_show_reasons",
-          checkboxName: "user[profile_attributes][show_reasons]",
+          checkboxId: "public_reasons",
+          checkboxName: "public_reasons",
           checkboxValue: profile.public_reasons ? "1" : "0",
         }}
       />
       <FormField
-        id="user_profile_attributes_projects"
+        id="projects"
         label="What would you like to work on in the space?"
         type="textarea"
-        name="user[profile_attributes][projects]"
+        name="projects"
         value={profile.projects ?? ""}
         optional={{
-          checkboxId: "user_profile_attributes_show_projects",
-          checkboxName: "user[profile_attributes][show_projects]",
+          checkboxId: "public_projects",
+          checkboxName: "public_projects",
           checkboxValue: profile.public_projects ? "1" : "0",
         }}
       />
       <FormField
-        id="user_profile_attributes_skills"
+        id="skills"
         label="What skills are you most interested in learning, improving, and/or teaching?"
         type="textarea"
-        name="user[profile_attributes][skills]"
+        name="skills"
         value={profile.skills ?? ""}
         optional={{
-          checkboxId: "user_profile_attributes_show_skills",
-          checkboxName: "user[profile_attributes][show_skills]",
+          checkboxId: "public_skills",
+          checkboxName: "public_skills",
           checkboxValue: profile.public_skills ? "1" : "0",
         }}
       />
 
       <FormField
-        id="user_profile_attributes_gravatar_email"
+        id="email_gravatar"
         label="Gravatar email*"
         type="text"
-        name="user[profile_attributes][gravatar_email]"
+        name="email_gravatar"
         value={profile.email_gravatar ?? ""}
         accessory={
           <span className="ml-2">
@@ -280,10 +284,10 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
           </span>
         }
       />
-      <Button color="dark/primary" className="mt-2 mb-2">
+      <Button color="dark/primary" className="mt-2 mb-2" type="submit">
         Save profile
       </Button>
-    </div>
+    </fetcher.Form>
   );
 };
 
@@ -302,6 +306,7 @@ const SectionAuthentication: React.FC = () => {
   );
 };
 
+// MARK: - React Router Reserved
 export async function loader(): Promise<Profile | null> {
   const { data } = await supabase.from("profile").select();
   if (!data || data.length != 1) {
@@ -309,6 +314,52 @@ export async function loader(): Promise<Profile | null> {
   }
 
   return data[0];
+}
+
+export async function action({ request }: ProfileRoute.ActionArgs) {
+  console.log(request);
+
+  const formData = await request.formData();
+  console.log(formData);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  console.log(user);
+
+  let profileUpdate: ProfileUpdate = {
+    display_name: formData.get("display_name") as string,
+    pronounceable_name: formData.get("pronounceable_name") as string,
+    pronouns: formData.get("pronouns") as string,
+    email_display: formData.get("email_display") as string,
+    social_twitter: formData.get("social_twitter") as string,
+    social_facebook: formData.get("social_facebook") as string,
+    social_website: formData.get("social_website") as string,
+    social_linkedin: formData.get("social_linkedin") as string,
+    social_blog: formData.get("social_blog") as string,
+    summary: formData.get("summary") as string,
+    reasons: formData.get("reasons") as string,
+    projects: formData.get("projects") as string,
+    skills: formData.get("skills") as string,
+    email_gravatar: formData.get("email_gravatar") as string,
+    user_id: user?.id, // Needed otherwise this will fail to find a row to update
+    public_projects: formData.get("public_projects") == "1",
+    public_reasons: formData.get("public_reasons") == "1",
+    public_skills: formData.get("public_skills") == "1",
+    public_member: formData.get("public_member") == "1",
+  };
+
+  const { data, error } = await supabase
+    .from("profile")
+    .upsert(profileUpdate)
+    .select();
+
+  if (error) {
+    console.log(error);
+  }
+
+  return data;
 }
 
 export default function MembersProfile() {
