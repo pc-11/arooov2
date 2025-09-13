@@ -1,27 +1,21 @@
-"use client";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useFetcher } from "react-router";
 
-import { Alert } from "../ui-toolkit/alert";
 import { AuthLayout } from "../ui-toolkit/auth-layout";
 import { Button } from "../ui-toolkit/button";
 import { Heading } from "../ui-toolkit/heading";
 import { Fieldset, Legend } from "../ui-toolkit/fieldset";
 
-import { GoogleOauthButton } from "./google_oauth_button";
-
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
-);
-
-// console.log(supabase);
-
-export async function handleSignInWithGoogle(response) {
-  const { data, error } = await supabase.auth.signInWithIdToken({
-    provider: "google",
-    token: response.credential,
-  });
+function GoogleOauthButton({}: {}) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form method="post" action="/signin">
+      <button
+        className="w-10 h-10 bg-white border-1 border-black rounded-lg"
+        type="submit"
+      ></button>
+    </fetcher.Form>
+  );
 }
 
 export function Auth() {
@@ -29,32 +23,8 @@ export function Auth() {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      console.log("signin error");
-    }
-    setLoading(false);
-  }
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      console.log("signup error");
-    }
-    if (!session) console.log("Check your email for email verification!");
-    setLoading(false);
-  }
+  async function signInWithEmail() {}
+  async function signUpWithEmail() {}
   return (
     <div className="space-y-8 max-w-4xl m-auto">
       <AuthLayout>

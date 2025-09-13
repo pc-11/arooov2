@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  redirect,
 } from "react-router";
-import type { Session } from "@supabase/supabase-js";
 
 import type { Route } from "./+types/root";
 import { MainNavbar } from "../components/main-navbar";
-import { supabase, Auth } from "../components/core/auth";
 import "./app.css";
+
+import { supabaseClientFromRequest } from "components/auth/client";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,29 +46,49 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  const [session, setSession] = useState<Session | null>(null);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
-  let skipAuth = false;
-
+export default function App({}: Route.ComponentProps) {
   return (
     <div className="min-h-screen bg-[#ebebeb]">
       <div className="mx-auto">
         <MainNavbar />
         <main className="px-4 sm:px-6 lg:px-8 py-8">
-          {(session && session.user) || skipAuth ? <Outlet /> : <Auth />}
+          <Outlet />
         </main>
       </div>
     </div>
   );
+}
+
+async function authMiddleware({ request, context }, next) {
+  const requestURL = new URL(request.url);
+  var { supabaseClient, headers } = supabaseClientFromRequest(request);
+
+  var hasUser: boolean = false;
+  if (supabaseClient) {
+    const { data, error } = await supabaseClient.auth.getUser();
+    hasUser = data?.user != null;
+  }
+  let shouldSkip: boolean =
+    hasUser ||
+    requestURL.pathname == "/signin" ||
+    requestURL.pathname == "/auth-callback" ||
+    requestURL.pathname == "/logout" ||
+    requestURL.pathname == "/test";
+
+  if (!shouldSkip) {
+    return redirect("/signin");
+  }
+  const response = await next();
+  for (const [key, value] of headers.entries()) {
+    response.headers.set(key, value);
+  }
+  return response;
+}
+
+export const middleware = [authMiddleware];
+
+export function HydrateFallback() {
+  return <div>Loading...</div>;
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

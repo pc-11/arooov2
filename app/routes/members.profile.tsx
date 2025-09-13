@@ -1,16 +1,13 @@
-import { useLoaderData, useFetcher } from "react-router";
-import type { Route as ProfileRoute } from "./+types/members.profile";
+import { data as wrap_data, useLoaderData, useFetcher } from "react-router";
+import type { Route } from "./+types/members.profile";
 
-import { Heading } from "../../components/ui-toolkit/heading";
-import { Text } from "../../components/ui-toolkit/text";
-import { Button } from "../../components/ui-toolkit/button";
-import { Input } from "../../components/ui-toolkit/input";
-import { Textarea } from "../../components/ui-toolkit/textarea";
-import { Fieldset, Legend } from "../../components/ui-toolkit/fieldset";
+import { Heading } from "components/ui-toolkit/heading";
+import { Button } from "components/ui-toolkit/button";
+import { Fieldset, Legend } from "components/ui-toolkit/fieldset";
 
-import { supabase } from "../../components/core/auth";
-import { Email } from "../../components/core/email";
-import type { Database, Tables } from "../../database.types";
+import type { Database, Tables } from "database.types";
+import { supabaseClientFromRequest } from "components/auth/client";
+import { Email } from "components/core/email";
 
 import {
   MembersPublicListLink,
@@ -143,7 +140,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         Profile fields are only visible to members by default and are totally
         optional.
       </p>
-      <Button color="dark/primary" className="mt-2 mb-2">
+      <Button color="dark/primary" className="mt-2 mb-2" type="submit">
         Save profile
       </Button>
       <FormCheckbox
@@ -307,26 +304,24 @@ const SectionAuthentication: React.FC = () => {
 };
 
 // MARK: - React Router Reserved
-export async function loader(): Promise<Profile | null> {
-  const { data } = await supabase.from("profile").select();
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const { supabaseClient, headers } = supabaseClientFromRequest(request);
+  const { data } = await supabaseClient.from("profile").select();
   if (!data || data.length != 1) {
     return null;
   }
 
-  return data[0];
+  return wrap_data(data[0], { headers });
 }
 
-export async function action({ request }: ProfileRoute.ActionArgs) {
-  console.log(request);
-
+export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
-  console.log(formData);
 
+  const { supabaseClient, headers } = supabaseClientFromRequest(request);
   const {
     data: { user },
-  } = await supabase.auth.getUser();
-
-  console.log(user);
+  } = await supabaseClient.auth.getUser();
 
   let profileUpdate: ProfileUpdate = {
     display_name: formData.get("display_name") as string,
@@ -343,14 +338,14 @@ export async function action({ request }: ProfileRoute.ActionArgs) {
     projects: formData.get("projects") as string,
     skills: formData.get("skills") as string,
     email_gravatar: formData.get("email_gravatar") as string,
-    user_id: user?.id, // Needed otherwise this will fail to find a row to update
+    user_id: user?.id,
     public_projects: formData.get("public_projects") == "1",
     public_reasons: formData.get("public_reasons") == "1",
     public_skills: formData.get("public_skills") == "1",
     public_member: formData.get("public_member") == "1",
   };
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("profile")
     .upsert(profileUpdate)
     .select();
@@ -359,10 +354,10 @@ export async function action({ request }: ProfileRoute.ActionArgs) {
     console.log(error);
   }
 
-  return data;
+  return wrap_data(data, { headers });
 }
 
-export default function MembersProfile() {
+export default function MembersProfile({}: Route.ComponentProps) {
   let profile: Profile | null = useLoaderData<typeof loader>();
   if (!profile) {
     return <div></div>;
