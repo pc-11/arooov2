@@ -13,7 +13,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     const { supabaseClient, headers } = supabaseClientFromRequest(request);
     const { error } = await supabaseClient.auth.exchangeCodeForSession(code);
     if (error) {
-      console.log(error);
+      console.log("authError: ", error);
     }
     return redirectDocument(next, { headers });
   }

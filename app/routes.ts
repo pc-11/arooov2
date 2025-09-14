@@ -17,6 +17,7 @@ export default [
     ]),
   ]),
   route("auth-callback", "routes/auth-callback.tsx"),
+  route("link-identity", "routes/link-identity.tsx"),
   route("signin", "routes/signin.tsx"),
   route("logout", "routes/logout.tsx"),
 ] satisfies RouteConfig;

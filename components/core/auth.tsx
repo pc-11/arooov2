@@ -6,15 +6,49 @@ import { Button } from "../ui-toolkit/button";
 import { Heading } from "../ui-toolkit/heading";
 import { Fieldset, Legend } from "../ui-toolkit/fieldset";
 
-function GoogleOauthButton({}: {}) {
+function GithubOauthButton({ action }: { action: string }) {
   const fetcher = useFetcher();
   return (
-    <fetcher.Form method="post" action="/signin">
+    <fetcher.Form method="post" action={action}>
       <button
-        className="w-10 h-10 bg-white border-1 border-black rounded-lg"
+        className="w-10 h-10 bg-red-950 border-1 border-black rounded-lg"
         type="submit"
+        name="oauth_provider"
+        value="github"
       ></button>
     </fetcher.Form>
+  );
+}
+
+function GoogleOauthButton({ action }: { action: string }) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form method="post" action={action}>
+      <button
+        className="w-10 h-10 bg-green-950 border-1 border-black rounded-lg"
+        type="submit"
+        name="oauth_provider"
+        value="google"
+      ></button>
+    </fetcher.Form>
+  );
+}
+
+export function LinkIdentityAuth() {
+  return (
+    <div className="space-y-8 max-w-4xl m-auto">
+      <AuthLayout>
+        <div className="w-200 flex flex-col items-center border-1 rounded p-5 border-gray-300">
+          <Heading level={1} className="mb-5">
+            Link Additional Accounts
+          </Heading>
+          <div className="flex space-x-3">
+            <GithubOauthButton action={"/link-identity"} />
+            <GoogleOauthButton action={"/link-identity"} />
+          </div>
+        </div>
+      </AuthLayout>
+    </div>
   );
 }
 
@@ -32,7 +66,10 @@ export function Auth() {
           <Heading level={1} className="mb-5">
             Members and Applicants Sign In
           </Heading>
-          <GoogleOauthButton />
+          <div className="flex space-x-3">
+            <GithubOauthButton action={"/signin"} />
+            <GoogleOauthButton action={"/signin"} />
+          </div>
           <div className="mb-4">
             <Fieldset>
               <Legend className="mb-2">
@@ -67,7 +104,7 @@ export function Auth() {
               />
             </Fieldset>
           </div>
-          <div className="flex flex-col space-y-2 items-center justify-evenly mt-10 mb-5">
+          <div className="flex space-x-2 min-w-20 items-center justify-evenly mt-10 mb-5">
             <Button
               color="dark/primary"
               disabled={loading}

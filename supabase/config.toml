@@ -134,7 +134,7 @@ enable_signup = true
 # Allow/disallow anonymous sign-ins to your project.
 enable_anonymous_sign_ins = false
 # Allow/disallow testing manual linking of accounts
-enable_manual_linking = false
+enable_manual_linking = true
 # Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
 minimum_password_length = 6
 # Passwords that do not meet the following requirements will be rejected as weak. Supported values
@@ -318,6 +318,7 @@ deno_version = 2
 [analytics]
 enabled = true
 port = 54327
+
 # Configure one of the supported backends: `postgres`, `bigquery`.
 backend = "postgres"
 
@@ -337,5 +338,11 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 [auth.external.google]
 enabled = true
 client_id = "env(VITE_GOOGLE_OAUTH_CLIENT_ID)"
-redirect_uri = "env(VITE_GOOGLE_OAUTH_CALLBACK_URI)"
+redirect_uri = "env(VITE_OAUTH_CALLBACK_URI)"
 secret = "env(VITE_GOOGLE_OAUTH_SECRET)"
+
+[auth.external.github]
+enabled = true
+client_id = "env(VITE_GITHUB_OAUTH_CLIENT_ID)"
+redirect_uri = "env(VITE_OAUTH_CALLBACK_URI)"
+secret = "env(VITE_GITHUB_OAUTH_CLIENT_SECRET)"

@@ -67,7 +67,7 @@ const FormCheckbox: React.FC<OptionalFieldProps> = ({
         defaultChecked={checkboxValue == "1"}
       />
       &nbsp;
-      {label}
+      {labelElement}
     </div>
   );
 };
@@ -344,6 +344,7 @@ export async function action({ request }: Route.ActionArgs) {
     public_skills: formData.get("public_skills") == "1",
     public_member: formData.get("public_member") == "1",
   };
+  console.log(profileUpdate);
 
   const { data, error } = await supabaseClient
     .from("profile")
@@ -351,7 +352,7 @@ export async function action({ request }: Route.ActionArgs) {
     .select();
 
   if (error) {
-    console.log(error);
+    console.log("profileError: ", error);
   }
 
   return wrap_data(data, { headers });

@@ -1,4 +1,4 @@
-import { Heading } from "../../components/ui-toolkit/heading";
+import { Heading } from "components/ui-toolkit/heading";
 import {
   Table,
   TableBody,
@@ -6,8 +6,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui-toolkit/table";
-import { Input } from "../../components/ui-toolkit/input";
+} from "components/ui-toolkit/table";
+import { Input } from "components/ui-toolkit/input";
 import { useMemo, useState } from "react";
 
 import {
@@ -240,7 +240,7 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
       </table>
 
       <p className="text-sm text-gray-500 mt-2">
-        {props.simplifyEntryDisplay ?? false ? (
+        {(props.simplifyEntryDisplay ?? false) ? (
           <span>
             Displaying {filteredApplications.length} of {applications.length}{" "}
             applications.
