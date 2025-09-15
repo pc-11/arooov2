@@ -10,6 +10,7 @@ import { Fieldset, Legend } from "components/ui-toolkit/fieldset";
 import type { Database, Tables } from "database.types";
 import { supabaseClientFromRequest } from "components/auth/client";
 import { Email } from "components/core/email";
+import { useToast } from "components/core/toast";
 
 import {
   MembersPublicListLink,
@@ -84,7 +85,7 @@ const FormField: React.FC<FormFieldProps> = ({
   ...fieldProps
 }) => {
   const textStylingClasses =
-    "text-black bg-white font-normal border-1 border-gray-400 min-w-80";
+    "text-black bg-white font-normal border-1 border-gray-400 min-w-80 rounded-sm pl-1";
   var textField = (
     <textarea
       className={clsx("w-full max-w-4xl min-h-10 resize", textStylingClasses)}
@@ -123,16 +124,8 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   // not present in the original page.
   const shouldIncludeProfileHeader: boolean = false;
 
-  var label = (
-    <div>
-      Show name, website, and{" "}
-      <GravatarSupportLink>Gravatar</GravatarSupportLink> (if you've set up a
-      Gravatar) on{" "}
-      <MembersPublicListLink>DU public website</MembersPublicListLink>
-    </div>
-  );
-
   const fetcher = useFetcher();
+  const { showToast } = useToast();
   const [pendingForm, setPendingForm] = useState<boolean>(false);
   const [animationState, setAnimationState] = useState<
     "started" | "done" | null
@@ -140,7 +133,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   const [saveProfileText, setSaveProfileText] =
     useState<string>("Save Profile");
 
-  let animationDurationMs = 1000;
+  let animationDurationMs = 340;
   let showDoneTextMs = 660;
 
   useEffect(() => {
@@ -155,10 +148,10 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
       animationState == "done" &&
       fetcher.state !== "submitting"
     ) {
-      setPendingForm(false);
-      setAnimationState(null);
-      setSaveProfileText("Done!");
       setTimeout(() => {
+        setPendingForm(false);
+        setAnimationState(null);
+        showToast("✅  Profile saved successfully!", "", 30);
         setSaveProfileText("Save Profile");
       }, showDoneTextMs);
     }
@@ -167,7 +160,10 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   return (
     <fetcher.Form
       method="post"
-      className={clsx("", pendingForm ? `animate-pulse` : "")}
+      className={clsx(
+        "",
+        pendingForm ? "animate-pulse pointer-events-none select-none" : ""
+      )}
     >
       {shouldIncludeProfileHeader && <Heading level={2}>Profile</Heading>}
       <p>
@@ -175,12 +171,23 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         Profile fields are only visible to members by default and are totally
         optional.
       </p>
-      <Button color="dark/primary" className="mt-2 mb-2" type="submit">
+      <Button
+        color="dark/primary"
+        className={clsx("mt-2 mb-2", pendingForm ? "opacity-50" : "opacity 0")}
+        type="submit"
+      >
         {saveProfileText}
       </Button>
       <FormCheckbox
         checkboxId="public_member"
-        checkboxLabel={label}
+        checkboxLabel={
+          <div>
+            Show name, website, and{" "}
+            <GravatarSupportLink>Gravatar</GravatarSupportLink> (if you've set
+            up a Gravatar) on{" "}
+            <MembersPublicListLink>DU public website</MembersPublicListLink>
+          </div>
+        }
         checkboxName="public_member"
         checkboxValue={profile.public_member}
       />

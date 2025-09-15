@@ -14,6 +14,7 @@ import { MainNavbar } from "../components/main-navbar";
 import "./app.css";
 
 import { supabaseClientFromRequest } from "components/auth/client";
+import { ToastContainer, ToastProvider } from "components/core/toast";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,10 +51,13 @@ export default function App({}: Route.ComponentProps) {
   return (
     <div className="min-h-screen bg-[#ebebeb]">
       <div className="mx-auto">
-        <MainNavbar />
-        <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
-          <Outlet />
-        </main>
+        <ToastProvider>
+          <MainNavbar />
+          <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
+            <ToastContainer />
+            <Outlet />
+          </main>
+        </ToastProvider>
       </div>
     </div>
   );
