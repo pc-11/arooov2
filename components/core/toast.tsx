@@ -48,7 +48,6 @@ export const Toast = ({ toast }: { toast: ToastLike }) => {
 
 export const ToastProvider = ({ children }: { children: any }) => {
   const [toasts, setToasts] = useState<ToastLike[]>([]);
-  // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   const showToast = (message: string, type = "info", onsetDelay = 0) => {
     const _showToast = () => {

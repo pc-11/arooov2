@@ -133,8 +133,8 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   const [saveProfileText, setSaveProfileText] =
     useState<string>("Save Profile");
 
-  let animationDurationMs = 340;
-  let showDoneTextMs = 660;
+  let animationDurationMs = 220;
+  let showDoneTextMs = 100;
 
   useEffect(() => {
     if (!pendingForm && fetcher.state === "submitting") {
