@@ -278,7 +278,7 @@ export default function MembersApplicationsDetail({}: Route.ComponentProps) {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
       <ApplicationLink>Back to Applications Overview</ApplicationLink>
       <br />
       <Heading level={2}>Application</Heading>
@@ -330,6 +330,6 @@ export default function MembersApplicationsDetail({}: Route.ComponentProps) {
           <br />
         </p>
       </div>
-    </div>
+    </>
   );
 }

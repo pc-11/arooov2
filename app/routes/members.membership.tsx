@@ -274,7 +274,7 @@ const SectionCancelMembership: React.FC = ({}) => {
 
 export default function MembersMembership(): React.ReactElement {
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
       <Heading id={HeaderId.ManageMembership} level={1} />
       <SectionTableOfContents />
       <Heading id={HeaderId.UpdateDues} level={2} />
@@ -283,6 +283,6 @@ export default function MembersMembership(): React.ReactElement {
       <SectionScholarship />
       <Heading id={HeaderId.CancelMembership} level={2} />
       <SectionCancelMembership />
-    </div>
+    </>
   );
 }

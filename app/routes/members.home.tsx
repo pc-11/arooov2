@@ -62,7 +62,7 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({
 
 export default function MembersHome() {
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
       <Heading id="space-access" level={2}>
         Space Access
       </Heading>
@@ -98,6 +98,6 @@ export default function MembersHome() {
       <SectionMemberTable placeholderText="adminTable" />
       <Heading level={2}>Members</Heading>
       <SectionMemberTable placeholderText="membersTable" />
-    </div>
+    </>
   );
 }

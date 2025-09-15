@@ -259,13 +259,13 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
 
 export default function MembersApplications(): React.ReactElement {
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
       <Heading level={1}>Submitted Applications</Heading>
       <SectionApplicationsTable
         applications={fakeApplications}
         simplifyEntryDisplay={true}
       />
       <Heading level={2}>Applicant Email Addresses</Heading>
-    </div>
+    </>
   );
 }
