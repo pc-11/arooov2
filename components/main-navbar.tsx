@@ -1,4 +1,3 @@
-"use client";
 import { useLocation } from "react-router";
 import {
   Disclosure,
@@ -15,10 +14,10 @@ import {
   ChevronDownIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import { Link } from "react-router";
 
 export function MainNavbar() {
   let location = useLocation();
-
   const navigationItems = [
     { name: "Home", href: "/members" },
     { name: "Applications", href: "/members/applications" },
@@ -43,11 +42,7 @@ export function MainNavbar() {
               <div className="flex shrink-0 items-center">
                 <Menu as="div" className="relative">
                   <MenuButton className="flex items-center gap-2 text-white hover:bg-[#a01f57] rounded-lg p-2 focus:outline-none">
-                    <img
-                      alt="Double Union"
-                      src="/double_union_logo.png"
-                      className="h-8 w-auto"
-                    />
+                    <img src="/double_union_logo.png" className="h-8 w-8" />
                     <span className="sm:block text-white font-medium">
                       Double Union
                     </span>
@@ -59,14 +54,14 @@ export function MainNavbar() {
                   >
                     {socialLinks.map((link) => (
                       <MenuItem key={link.name}>
-                        <a
-                          href={link.href}
+                        <Link
+                          to={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="navbar block px-4 py-2 text-sm text-white data-focus:bg-[#a01f57] data-focus:outline-none"
                         >
                           {link.name}
-                        </a>
+                        </Link>
                       </MenuItem>
                     ))}
                   </MenuItems>
@@ -75,9 +70,9 @@ export function MainNavbar() {
               {/* Desktop Navigation */}
               <div className="hidden md:ml-6 md:flex md:space-x-8">
                 {navigationItems.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className={`navbar inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium ${
                       item.href == location.pathname
                         ? "border-white text-white"
@@ -85,15 +80,15 @@ export function MainNavbar() {
                     }`}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
             <div className="hidden md:ml-6 md:flex md:items-center gap-4">
               {/* Profile Section */}
               <div className="flex items-center gap-3">
-                <a
-                  href="/members/profile"
+                <Link
+                  to="/members/profile"
                   className="navbar flex items-center gap-2 text-white hover:text-gray-200 px-2 py-1 rounded"
                 >
                   <img
@@ -101,13 +96,13 @@ export function MainNavbar() {
                     src="/placeholder-avatar.jpg"
                     className="h-8 w-8 rounded-full"
                   />
-                </a>
-                <a
-                  href="/logout"
+                </Link>
+                <Link
+                  to="/logout"
                   className="navbar text-white hover:text-gray-200 p-1 rounded focus:outline-none"
                 >
                   <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
-                </a>
+                </Link>
               </div>
             </div>
             <div className="-mr-2 flex items-center md:hidden">
@@ -162,14 +157,14 @@ export function MainNavbar() {
                   user@doubleunion.org
                 </div>
               </div>
-              <a
-                href="/logout"
+              <Link
+                to="/logout"
                 className="navbar relative ml-auto shrink-0 rounded-full p-1 text-white hover:text-gray-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary focus:outline-none"
               >
                 <span className="absolute -inset-1.5" />
                 <span className="sr-only">Sign out</span>
                 <ArrowRightStartOnRectangleIcon className="h-6 w-6" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

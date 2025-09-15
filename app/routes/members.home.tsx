@@ -91,8 +91,8 @@ export default function MembersHome() {
       <SectionBookmarks />
       <Heading level={2}>Admins</Heading>
       <p>
-        This internal DU app is administered by Membership Coordinators
-        <Email emailStr="membership@doubleunion.org" /> and Board Members &nbsp;
+        This internal DU app is administered by Membership Coordinators{" "}
+        <Email emailStr="membership@doubleunion.org" /> and Board Members{" "}
         <Email emailStr="board@doubleunion.org" />. Members with admin access:
       </p>
       <SectionMemberTable placeholderText="adminTable" />
