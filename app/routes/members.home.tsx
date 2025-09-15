@@ -1,8 +1,6 @@
+import { Link, useLoaderData } from "react-router";
 import { Heading } from "../../components/ui-toolkit/heading";
-import { Link } from "../../components/ui-toolkit/link";
-import { Text } from "../../components/ui-toolkit/text";
-import { useState } from "react";
-import { LinkIcon } from "../../components/core/icons";
+import React, { useState } from "react";
 
 import { Email } from "components/core/email";
 import {
@@ -14,6 +12,13 @@ import {
   MembersMailingListLink,
   SlackLink,
 } from "components/core/links";
+
+interface Member {
+  id: string;
+  name: string;
+  username: string;
+  status: string;
+}
 
 const SectionBookmarks: React.FC = () => {
   return (
@@ -47,10 +52,11 @@ const SectionBookmarks: React.FC = () => {
 };
 
 interface MemberTableProps {
+  members?: Member[];
   placeholderText?: string;
 }
 
-const SectionMemberTable: React.FC<MemberTableProps> = ({
+const _SectionMemberTable: React.FC<MemberTableProps> = ({
   placeholderText,
 }) => {
   return (
@@ -60,7 +66,63 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({
   );
 };
 
+const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
+  return (
+    <table className="table-fixed w-full border-collapse text-sm mt-4">
+      <thead className="">
+        <tr className="w-1/3 font-bold h-10">
+          <td className="text-left">Name</td>
+          <td className="text-left">Username</td>
+          <td className="text-left">Status</td>
+        </tr>
+      </thead>
+      <tbody>
+        {members?.map((member: Member) => (
+          <tr
+            key={member.id}
+            className="border-t-2 border-gray-300 align-center"
+          >
+            <td className="pl-1 pt-1.75 pb-1.75">
+              <div className="flex space-x-1 self-center">
+                <img src="/placeholder-avatar.jpg"></img>
+                <Link
+                  to={`/members/profile/${member.id}`}
+                  className="self-center"
+                >
+                  {member.name}
+                </Link>
+              </div>
+            </td>
+            <td className="p-0">
+              <Link to={`/members/profile/${member.id}`}>
+                {member.username}
+              </Link>
+            </td>
+            <td className="p-0">{member.status}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
 export default function MembersHome() {
+  // let members: Member[] = useLoaderData<Member[]>();
+  let members = [
+    {
+      id: "1",
+      name: "Peterson Cheng",
+      username: "tchspetersoncheng@gmail.com",
+      status: "Key Member",
+    },
+    {
+      id: "2",
+      name: "2Peterson Cheng",
+      username: "2tchspetersoncheng@gmail.com",
+      status: "2Key Member",
+    },
+  ];
+
   return (
     <>
       <Heading id="space-access" level={2}>
@@ -95,7 +157,7 @@ export default function MembersHome() {
         <Email emailStr="membership@doubleunion.org" /> and Board Members{" "}
         <Email emailStr="board@doubleunion.org" />. Members with admin access:
       </p>
-      <SectionMemberTable placeholderText="adminTable" />
+      <SectionMemberTable members={members} />
       <Heading level={2}>Members</Heading>
       <SectionMemberTable placeholderText="membersTable" />
     </>
