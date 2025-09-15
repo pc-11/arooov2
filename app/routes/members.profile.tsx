@@ -1,3 +1,5 @@
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 import { data as wrap_data, useLoaderData, useFetcher } from "react-router";
 import type { Route } from "./+types/members.profile";
 
@@ -14,8 +16,6 @@ import {
   GravatarSupportLink,
 } from "components/core/links";
 
-import clsx from "clsx";
-
 type Profile = Tables<"profile">;
 type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
 
@@ -23,7 +23,7 @@ interface OptionalFieldProps {
   checkboxId: string;
   checkboxName: string;
   checkboxLabel?: string | React.ReactElement;
-  checkboxValue?: "0" | "1";
+  checkboxValue?: boolean | null;
 }
 
 interface FormFieldProps {
@@ -43,7 +43,6 @@ const FormCheckbox: React.FC<OptionalFieldProps> = ({
   checkboxLabel,
   checkboxValue,
 }) => {
-  var value = checkboxValue ?? "0";
   var label =
     checkboxLabel ?? "Check this if you want it to show up on your profile.";
 
@@ -57,14 +56,17 @@ const FormCheckbox: React.FC<OptionalFieldProps> = ({
     var labelElement: React.ReactElement = label;
   }
 
+  const [isChecked, setChecked] = useState<boolean>(Boolean(checkboxValue));
+
   return (
     <div className="flex">
       <input
         id={checkboxId}
         type="checkbox"
         name={checkboxName}
-        value={value}
-        defaultChecked={checkboxValue == "1"}
+        onChange={() => setChecked(!isChecked)}
+        value={String(isChecked)}
+        defaultChecked={isChecked}
       />
       &nbsp;
       {labelElement}
@@ -131,9 +133,42 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   );
 
   const fetcher = useFetcher();
+  const [pendingForm, setPendingForm] = useState<boolean>(false);
+  const [animationState, setAnimationState] = useState<
+    "started" | "done" | null
+  >(null);
+  const [saveProfileText, setSaveProfileText] =
+    useState<string>("Save Profile");
+
+  let animationDurationMs = 1000;
+  let showDoneTextMs = 660;
+
+  useEffect(() => {
+    if (!pendingForm && fetcher.state === "submitting") {
+      setPendingForm(true);
+      setSaveProfileText("Saving...");
+      setTimeout(() => {
+        setAnimationState("done");
+      }, animationDurationMs);
+    } else if (
+      pendingForm &&
+      animationState == "done" &&
+      fetcher.state !== "submitting"
+    ) {
+      setPendingForm(false);
+      setAnimationState(null);
+      setSaveProfileText("Done!");
+      setTimeout(() => {
+        setSaveProfileText("Save Profile");
+      }, showDoneTextMs);
+    }
+  }, [fetcher.state, pendingForm, animationState]);
 
   return (
-    <fetcher.Form method="post">
+    <fetcher.Form
+      method="post"
+      className={clsx("", pendingForm ? `animate-pulse` : "")}
+    >
       {shouldIncludeProfileHeader && <Heading level={2}>Profile</Heading>}
       <p>
         {" "}
@@ -141,13 +176,13 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         optional.
       </p>
       <Button color="dark/primary" className="mt-2 mb-2" type="submit">
-        Save profile
+        {saveProfileText}
       </Button>
       <FormCheckbox
         checkboxId="public_member"
         checkboxLabel={label}
         checkboxName="public_member"
-        checkboxValue={profile.public_member ? "1" : "0"}
+        checkboxValue={profile.public_member}
       />
       <FormField
         id="display_name"
@@ -241,7 +276,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         optional={{
           checkboxId: "public_reasons",
           checkboxName: "public_reasons",
-          checkboxValue: profile.public_reasons ? "1" : "0",
+          checkboxValue: profile.public_reasons,
         }}
       />
       <FormField
@@ -253,7 +288,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         optional={{
           checkboxId: "public_projects",
           checkboxName: "public_projects",
-          checkboxValue: profile.public_projects ? "1" : "0",
+          checkboxValue: profile.public_projects,
         }}
       />
       <FormField
@@ -265,7 +300,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         optional={{
           checkboxId: "public_skills",
           checkboxName: "public_skills",
-          checkboxValue: profile.public_skills ? "1" : "0",
+          checkboxValue: profile.public_skills,
         }}
       />
 
@@ -282,7 +317,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
         }
       />
       <Button color="dark/primary" className="mt-2 mb-2" type="submit">
-        Save profile
+        {pendingForm ? "Saving..." : "Save profile"}
       </Button>
     </fetcher.Form>
   );
@@ -339,12 +374,11 @@ export async function action({ request }: Route.ActionArgs) {
     skills: formData.get("skills") as string,
     email_gravatar: formData.get("email_gravatar") as string,
     user_id: user?.id,
-    public_projects: formData.get("public_projects") == "1",
-    public_reasons: formData.get("public_reasons") == "1",
-    public_skills: formData.get("public_skills") == "1",
-    public_member: formData.get("public_member") == "1",
+    public_projects: formData.get("public_projects") == "true",
+    public_reasons: formData.get("public_reasons") == "true",
+    public_skills: formData.get("public_skills") == "true",
+    public_member: formData.get("public_member") == "true",
   };
-  console.log(profileUpdate);
 
   const { data, error } = await supabaseClient
     .from("profile")
@@ -352,7 +386,7 @@ export async function action({ request }: Route.ActionArgs) {
     .select();
 
   if (error) {
-    console.log("profileError: ", error);
+    console.error("profileError: ", error);
   }
 
   return wrap_data(data, { headers });
