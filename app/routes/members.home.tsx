@@ -62,7 +62,7 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({
 
 export default function MembersHome() {
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <Heading id="space-access" level={2}>
         Space Access
       </Heading>

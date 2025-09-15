@@ -12,6 +12,10 @@ export default [
     layout("routes/members.tsx", [
       index("routes/members.home.tsx"),
       route("applications", "routes/members.applications.tsx"),
+      route(
+        "applications/:application_id",
+        "routes/members.applications.detail.tsx"
+      ),
       route("profile", "routes/members.profile.tsx"),
       route("membership", "routes/members.membership.tsx"),
     ]),

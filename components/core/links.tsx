@@ -1,4 +1,4 @@
-import { Link } from "../../components/ui-toolkit/link";
+import { Link } from "components/ui-toolkit/link";
 
 // Defines a list of external link constants, to faciliate easier changing of
 // links consistent across pages.
@@ -12,6 +12,12 @@ function linkComponentWithHref(href: string) {
     );
   };
 }
+
+export const ApplicationLink = linkComponentWithHref("/members/applications");
+
+export const ApplicationCommentingLink = linkComponentWithHref(
+  "https://docs.google.com/document/d/12R7utXAiyCK55XEP8cPscUqu2CXAj-hL5jXE-MaJdgE/edit#heading=h.qmgkosbaknlv"
+);
 
 export const ApplicationCriteriaLink = linkComponentWithHref(
   "https://docs.google.com/document/d/12R7utXAiyCK55XEP8cPscUqu2CXAj-hL5jXE-MaJdgE/edit#heading=h.y6eimvxrwzvf"

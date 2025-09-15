@@ -398,7 +398,7 @@ export default function MembersProfile({}: Route.ComponentProps) {
     return <div></div>;
   }
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <Heading level={1}>Edit Profile</Heading>
       <Heading level={2}>Authentication</Heading>
       <SectionAuthentication />

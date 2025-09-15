@@ -36,7 +36,7 @@ function GoogleOauthButton({ action }: { action: string }) {
 
 export function LinkIdentityAuth() {
   return (
-    <div className="space-y-8 max-w-4xl m-auto">
+    <div className="max-w-4xl m-auto">
       <AuthLayout>
         <div className="w-200 flex flex-col items-center border-1 rounded p-5 border-gray-300">
           <Heading level={1} className="mb-5">
@@ -60,7 +60,7 @@ export function Auth() {
   async function signInWithEmail() {}
   async function signUpWithEmail() {}
   return (
-    <div className="space-y-8 max-w-4xl m-auto">
+    <div className="max-w-4xl m-auto">
       <AuthLayout>
         <div className="w-200 flex flex-col items-center border-1 rounded p-5 border-gray-300">
           <Heading level={1} className="mb-5">
