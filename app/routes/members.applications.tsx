@@ -187,6 +187,7 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
   return (
     <div>
       <p>
+        <br />
         As guided by our{" "}
         <ConfidentialityPolicyLink>
           Confidentiality Policy
@@ -209,12 +210,13 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
           placeholder="Search applications..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="ml-3 max-w-40 border-1"
+          className="ml-3 max-w-45 border-1 rounded-lg"
+          inputClassName="text-black! px-2!"
         />
       </div>
-      <table className="w-full">
+      <Table className="w-full" tableClassName="text-black! " striped={true}>
         <TableHead>
-          <TableRow>
+          <TableRow className="">
             {tableHeaders.map(({ key, label }) => (
               <TableHeader
                 key={key}
@@ -230,14 +232,19 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
         </TableHead>
         <TableBody>
           {filteredApplications.map((app) => (
-            <TableRow key={app.name}>
+            <TableRow
+              key={app.name}
+              className="odd:bg-gray-300/30 border-t-2 border-gray-300/90"
+            >
               {Object.values(app).map((value, index) => (
-                <TableCell key={index}>{value}</TableCell>
+                <TableCell key={index} className="py-2! bg-transparent!">
+                  {value}
+                </TableCell>
               ))}
             </TableRow>
           ))}
         </TableBody>
-      </table>
+      </Table>
 
       <p className="text-sm text-gray-500 mt-2">
         {(props.simplifyEntryDisplay ?? false) ? (

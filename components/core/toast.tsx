@@ -1,18 +1,21 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 
+interface ShowToastProps {
+  message: string;
+  type?: ToastLike["type"];
+  onsetDelay?: number;
+  only?: boolean;
+}
+
 interface ToastContextType {
   toasts: ToastLike[];
-  showToast: (
-    message: string,
-    type?: ToastLike["type"],
-    onsetDelay?: number
-  ) => void;
+  showToast: ({ ...props }: ShowToastProps) => void;
   removeToast: (id: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType>({
   toasts: [],
-  showToast: (message: string, type?: string, onsetDelay?: number) => {},
+  showToast: ({ message, type, onsetDelay, only }) => {},
   removeToast: (id: string) => {},
 });
 
@@ -49,10 +52,21 @@ export const Toast = ({ toast }: { toast: ToastLike }) => {
 export const ToastProvider = ({ children }: { children: any }) => {
   const [toasts, setToasts] = useState<ToastLike[]>([]);
 
-  const showToast = (message: string, type = "info", onsetDelay = 0) => {
+  const showToast = ({
+    message,
+    type = "info",
+    onsetDelay = 0,
+    only = false,
+  }: ShowToastProps) => {
     const _showToast = () => {
       const newToast = { id: String(Date.now()), message, type };
-      setToasts((toasts) => [...toasts, newToast]);
+      console.log(toasts.length);
+      // Weird workaround for how sometimes toasts are dispatched multiple-times
+      if (only) {
+        setToasts((toasts) => [newToast]);
+      } else {
+        setToasts((toasts) => [...toasts, newToast]);
+      }
     };
     setTimeout(_showToast, onsetDelay);
   };

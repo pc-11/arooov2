@@ -56,16 +56,6 @@ interface MemberTableProps {
   placeholderText?: string;
 }
 
-const _SectionMemberTable: React.FC<MemberTableProps> = ({
-  placeholderText,
-}) => {
-  return (
-    <div className="w-full min-h-40 border-1 flex items-center justify-center">
-      {placeholderText}
-    </div>
-  );
-};
-
 const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
   return (
     <table className="table-fixed w-full border-collapse text-sm mt-4">
@@ -80,7 +70,7 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
         {members?.map((member: Member) => (
           <tr
             key={member.id}
-            className="border-t-2 border-gray-300 align-center"
+            className="border-t-2 border-gray-300/90 align-center"
           >
             <td className="pl-1 pt-1.75 pb-1.75">
               <div className="flex space-x-1 self-center">
@@ -107,18 +97,17 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
 };
 
 export default function MembersHome() {
-  // let members: Member[] = useLoaderData<Member[]>();
   let members = [
     {
       id: "1",
-      name: "Peterson Cheng",
-      username: "tchspetersoncheng@gmail.com",
+      name: "Member 1",
+      username: "member1@gmail.com",
       status: "Key Member",
     },
     {
       id: "2",
-      name: "2Peterson Cheng",
-      username: "2tchspetersoncheng@gmail.com",
+      name: "Member 2",
+      username: "member2@gmail.com",
       status: "2Key Member",
     },
   ];

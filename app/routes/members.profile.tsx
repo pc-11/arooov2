@@ -123,6 +123,7 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   // of the authentication + form fields, but for parity this is
   // not present in the original page.
   const shouldIncludeProfileHeader: boolean = false;
+  const shouldUseSlowAnimation: boolean = false;
 
   const fetcher = useFetcher();
   const { showToast } = useToast();
@@ -133,7 +134,8 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
   const [saveProfileText, setSaveProfileText] =
     useState<string>("Save Profile");
 
-  let animationDurationMs = 220;
+  // The fast animation time feels "harsh" but is highly responsive
+  let animationDurationMs = shouldUseSlowAnimation ? 1200 : 200;
   let showDoneTextMs = 100;
 
   useEffect(() => {
@@ -151,7 +153,10 @@ const SectionProfileForm: React.FC<{ profile: Profile }> = ({ profile }) => {
       setTimeout(() => {
         setPendingForm(false);
         setAnimationState(null);
-        showToast("✅  Profile saved successfully!", "", 30);
+        showToast({
+          message: "✅  Profile saved successfully!",
+          onsetDelay: 30,
+        });
         setSaveProfileText("Save Profile");
       }, showDoneTextMs);
     }
