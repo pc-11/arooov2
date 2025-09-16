@@ -5,9 +5,9 @@ import { supabaseClientFromRequest } from "components/auth/client";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { supabaseClient, headers } = supabaseClientFromRequest(request);
-  let error = await supabaseClient.auth.signOut();
+  let { error } = await supabaseClient.auth.signOut();
   if (error) {
-    console.log("logoutError: ", error);
+    console.error("logoutError: ", error);
   }
-  return redirectDocument("/members/profile");
+  return redirectDocument("/members/profile", { headers });
 }

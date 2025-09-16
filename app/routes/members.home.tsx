@@ -99,7 +99,7 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
 export default function MembersHome() {
   let members = [
     {
-      id: "1",
+      id: "b26dc816-7d8c-47c4-a3fb-712ff7650e76",
       name: "Member 1",
       username: "member1@gmail.com",
       status: "Key Member",

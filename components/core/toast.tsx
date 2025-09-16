@@ -60,7 +60,6 @@ export const ToastProvider = ({ children }: { children: any }) => {
   }: ShowToastProps) => {
     const _showToast = () => {
       const newToast = { id: String(Date.now()), message, type };
-      console.log(toasts.length);
       // Weird workaround for how sometimes toasts are dispatched multiple-times
       if (only) {
         setToasts((toasts) => [newToast]);

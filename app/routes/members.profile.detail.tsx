@@ -45,7 +45,6 @@ export async function loader({
     .from("profile")
     .select("*")
     .filter("user_id", "eq", params.profile_id);
-  console.log(data);
   if (!data || data.length != 1) {
     return null;
   }
@@ -90,7 +89,7 @@ export async function loader({
   }
   let isValidUrl: (maybeUrl: string) => boolean = (maybeUrl: string) => {
     try {
-      console.log(new URL(maybeUrl));
+      new URL(maybeUrl);
       return true;
     } catch (e) {
       return false;
