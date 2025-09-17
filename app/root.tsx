@@ -47,18 +47,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App({}: Route.ComponentProps) {
+export default function App({ params }: Route.ComponentProps) {
   return (
-    <div className="min-h-screen bg-[#ebebeb]">
-      <div className="mx-auto">
-        <ToastProvider>
-          <MainNavbar />
-          <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
-            <ToastContainer />
-            <Outlet />
-          </main>
-        </ToastProvider>
-      </div>
+    <div className="min-h-screen bg-[#ebebeb] mx-auto">
+      <ToastProvider>
+        <MainNavbar />
+        <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto">
+          <ToastContainer />
+          <Outlet />
+        </main>
+      </ToastProvider>
     </div>
   );
 }
@@ -95,7 +93,7 @@ export function HydrateFallback() {
   return <div>Loading...</div>;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export function ErrorBoundary({ params, error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
@@ -112,7 +110,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className="pt-16 p-4 container mx-auto bg-white">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
