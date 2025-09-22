@@ -368,7 +368,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const { supabaseClient, headers } = supabaseClientFromRequest(request);
   const { data } = await supabaseClient.from("profile").select();
   if (!data || data.length != 1) {
-    return null;
+    throw new Response(null, { status: 404, statusText: "Not Found" });
   }
 
   return wrap_data(data[0], { headers });
@@ -417,10 +417,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function MembersProfile({}: Route.ComponentProps) {
-  let profile: Profile | null = useLoaderData<typeof loader>();
-  if (!profile) {
-    return <div></div>;
-  }
+  let profile: Profile = useLoaderData<typeof loader>();
   return (
     <>
       <Heading level={1}>Edit Profile</Heading>

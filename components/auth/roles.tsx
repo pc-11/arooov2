@@ -18,7 +18,7 @@ export class Role {
     this.roles = roles;
   }
 
-  hasRole(checkRole: string): boolean {
+  private hasRole(checkRole: string): boolean {
     return this.roles.some((row) => row.role == checkRole);
   }
 

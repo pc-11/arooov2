@@ -3,10 +3,17 @@ import {
   useLoaderData,
   useFetcher,
   Form,
+  redirect,
 } from "react-router";
 
 import type { Route } from "./+types/members.applications.detail";
 import { supabaseClientFromRequest } from "components/auth/client";
+import { type Role, RoleContext } from "components/auth/roles";
+import {
+  type Application,
+  Form as ApplicationForm,
+  FormField,
+} from "components/core/application-form";
 import {
   ApplicationCommentingLink,
   ApplicationCriteriaLink,
@@ -25,10 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from "components/ui-toolkit/table";
-import type { Database, Tables } from "database.types";
-
-type Profile = Tables<"profile">;
-type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
 
 interface LinkableUser {
   name: string;
@@ -42,15 +45,24 @@ interface Comment {
 }
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  // Given user_id: UserId:  fetch applications.user_id = user_id
-  // Given user_id: fetch votes where votes.application_id = user_id
-  // Given user_id: fetch comments where comments.application_id = user_id
-  return null;
+  let role: Role | null = context.get(RoleContext);
+  if (!role?.isProspectiveMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect("/");
+  }
+
+  const { supabaseClient, headers } = supabaseClientFromRequest(request);
+  const { data } = await supabaseClient.from("applications").select();
+  if (!data || data.length != 1) {
+    return null;
+  }
+
+  return wrap_data(data[0], { headers });
 }
 
 export async function action({ request }: Route.ActionArgs) {
   //   const formData = await request.formData();
-  //   const { supabaseCli  ent, headers } = supabaseClientFromRequest(request);
+  //   const { supabaseClient, headers } = supabaseClientFromRequest(request);
   //   const {
   //     data: { user },
   //   } = await supabaseClient.auth.getUser();
@@ -63,98 +75,6 @@ export async function action({ request }: Route.ActionArgs) {
   //     console.error("profileError: ", error);
   //   }
   //   return wrap_data(data, { headers });
-}
-
-interface ReadOnlyFormProps {
-  label: string;
-  isRequired?: boolean;
-  subLabel?: string;
-  valueText?: string;
-}
-
-export function FormField({
-  label,
-  isRequired,
-  subLabel,
-  valueText,
-}: ReadOnlyFormProps) {
-  return (
-    <div className="flex shrink pt-1 pb-1">
-      <div className="w-1/3">
-        <div className="flex-col p-1">
-          <b>{label}</b>
-
-          <div className="text-sm">
-            ({(isRequired ?? false) ? "required" : "optional"})
-          </div>
-          {subLabel ? (
-            <div className="text-base/4">
-              <br />
-              <p className="font-bold text-sm/4.5">{subLabel}</p>
-              <br />
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="w-2/3 p-1 pl-5">{valueText ?? ""}</div>
-    </div>
-  );
-}
-
-export function ReadonlyForm() {
-  return (
-    <div className="flex-col">
-      <Divider />
-      <FormField
-        label="Full name"
-        isRequired={true}
-        valueText="Peterson Cheng"
-      />
-      <Divider />
-      <FormField
-        label="Contact Email"
-        subLabel="*We will use this email to contact you about your application."
-        isRequired={true}
-        valueText="tchspetersoncheng@gmail.com"
-      />
-      <Divider />
-      <FormField
-        label="Google account email"
-        subLabel="*We use Google Calendar, Drive and Groups for internal coordination for members. We will use this email to add you to those resources if you get accepted as a member."
-        valueText="tchspetersoncheng@gmail.com"
-      />
-      <Divider />
-      <FormField
-        label="Pronouns"
-        subLabel="*This does not affect your application, we just want to know how to refer to you respectfully."
-        valueText="she/they"
-      />
-      <Divider />
-      <FormField label="Twitter Username" />
-      <Divider />
-      <FormField label="Facebook URL" />
-      <Divider />
-      <FormField label="Website URL" />
-      <Divider />
-      <FormField label="LinkedIn URL" />
-      <Divider />
-      <FormField
-        label="Why are you interested in joining Double Union?"
-        isRequired={true}
-      ></FormField>
-      <Divider />
-      <FormField
-        label="What is your definition of your feminism?"
-        isRequired={true}
-      ></FormField>
-      <Divider />
-      <FormField
-        label="Have you been to DU events or met DU members?"
-        isRequired={true}
-      ></FormField>
-    </div>
-  );
 }
 
 export function SponsorshipForm() {
@@ -276,6 +196,7 @@ export default function MembersApplicationsDetail({}: Route.ComponentProps) {
     { name: "Sponsor5", id: "5" },
     { name: "Sponsor5", id: "6" },
   ];
+  let application = useLoaderData<Application>();
 
   return (
     <>
@@ -291,7 +212,7 @@ export default function MembersApplicationsDetail({}: Route.ComponentProps) {
         (such as contents, comments from members, and votes) confidential among
         DU members.
       </p>
-      <ReadonlyForm />
+      <ApplicationForm application={application} readOnly={true} />
       <Heading level={2}>Sponsorship</Heading>
       <SponsorshipForm />
       <Heading level={2}>Status</Heading>

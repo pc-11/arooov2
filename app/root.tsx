@@ -69,9 +69,7 @@ export default function App({ params }: Route.ComponentProps) {
       { name: "Manage Membership", href: "/members/membership" },
     ];
   } else if (role != null && role.isProspectiveMember()) {
-    navigationItems = [
-      { name: "Application", href: `/members/applications/${role.userId}` },
-    ];
+    navigationItems = [{ name: "Application", href: `/members/applications` }];
   }
 
   return (
@@ -115,20 +113,22 @@ async function authMiddleware({ request, context }, next) {
     requestURL.pathname == "/auth-callback" ||
     requestURL.pathname == "/logout";
 
-  if (!userId && !criticalAuthPath) {
-    return redirect("/signin");
-  }
+  if (!criticalAuthPath) {
+    if (!userId) {
+      return redirect("/signin");
+    }
 
-  const { data: roleData, error: roleError } = await supabaseClient
-    .from("user_role_view")
-    .select();
-  let role: Role | null = null;
-  if (roleData && userId) {
-    role = new Role(userId, roleData as RoleData[]);
-    context.set(RoleContext, role);
-  }
-  if (!role) {
-    throw new Response(null, { status: 404, statusText: "Not Found" });
+    const { data: roleData, error: roleError } = await supabaseClient
+      .from("user_role_view")
+      .select();
+    let role: Role | null = null;
+    if (roleData && userId) {
+      role = new Role(userId, roleData as RoleData[]);
+      context.set(RoleContext, role);
+    }
+    if (!role) {
+      throw new Response(null, { status: 404, statusText: "Not Found" });
+    }
   }
   const response = await next();
   for (const [key, value] of headers.entries()) {

@@ -270,6 +270,9 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   let role: Role | null = context.get(RoleContext);
+  if (role?.isProspectiveMember()) {
+    return redirect(`/members/applications/${role.userId}/edit`);
+  }
   if (!role?.isMember()) {
     console.log("not a member! let home decide where they belong");
     return redirect("/");

@@ -104,9 +104,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   if (!role) {
     throw new Response(null, { status: 404, statusText: "Not Found" });
   }
-  if (role && role?.isProspectiveMember()) {
-    console.log("not a member! let home decide where they belong");
-    return redirect(`/members/applications/${role.userId}`);
+  if (role?.isProspectiveMember()) {
+    console.log("is an applicant! sending to application");
+    return redirect("/members/applications");
   }
 }
 

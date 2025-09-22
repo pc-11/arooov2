@@ -63,6 +63,11 @@ export const MembersPublicListLink = linkComponentWithHref(
 
 export const MembersLink = linkComponentWithHref("/members");
 
+export const PronounGuideLink = linkComponentWithHref(
+  "https://www.brynmawr.edu/sites/default/files/media/documents/2022-03/Asking%20for%20pronouns.pdf"
+  // "https://www.brynmawr.edu/sites/default/files/asking-for-name-and-pronouns.pdf"
+);
+
 export const SlackLink = linkComponentWithHref(
   "https://doubleunion.slack.com/"
 );
