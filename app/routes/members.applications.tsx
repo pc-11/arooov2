@@ -10,10 +10,14 @@ import {
 import { Input } from "components/ui-toolkit/input";
 import { useMemo, useState } from "react";
 
+import type { Route } from "./+types/members.applications";
+
 import {
   ApplicationCriteriaLink,
   ConfidentialityPolicyLink,
 } from "components/core/links";
+import { redirect, useLoaderData } from "react-router";
+import { Role, RoleContext } from "components/auth/roles";
 
 interface Sponsor {}
 interface Comment {}
@@ -264,12 +268,22 @@ const SectionApplicationsTable: React.FC<ApplicationTableProps> = ({
   );
 };
 
+export async function loader({ request, context }: Route.LoaderArgs) {
+  let role: Role | null = context.get(RoleContext);
+  if (!role?.isMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect("/");
+  }
+  return fakeApplications;
+}
+
 export default function MembersApplications(): React.ReactElement {
+  let applications: Application[] | null = useLoaderData<typeof loader>();
   return (
     <>
       <Heading level={1}>Submitted Applications</Heading>
       <SectionApplicationsTable
-        applications={fakeApplications}
+        applications={applications}
         simplifyEntryDisplay={true}
       />
       <Heading level={2}>Applicant Email Addresses</Heading>

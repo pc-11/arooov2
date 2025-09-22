@@ -25,28 +25,3 @@ create table public.profile (
   constraint profile_user_id_key unique (user_id),
   constraint profile_user_id_fkey foreign KEY (user_id) references auth.users (id) on update CASCADE on delete CASCADE
 ) TABLESPACE pg_default;
-
-create function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer set search_path = ''
-as $$
-begin
-  insert into public.profile (user_id, display_name, email_display, email_google)
-  values (new.id, new.raw_user_meta_data ->> 'full_name', new.email, (
-    CASE
-      WHEN  to_json(new)->'raw_app_meta_data'->>'provider' = 'google' THEN new.email
-      ELSE null
-    END
-  ));
-  return new;
-end;
-$$;
-
-drop trigger on_auth_user_created ON auth.users;
-
--- trigger the function every time a user is created
-create trigger on_auth_user_created
-  after insert on auth.users  
-  for each row execute procedure public.handle_new_user();
-

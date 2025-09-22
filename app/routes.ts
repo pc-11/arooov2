@@ -16,8 +16,11 @@ export default [
         "applications/:application_id",
         "routes/members.applications.detail.tsx"
       ),
+      route(
+        "applications/:application_id/edit",
+        "routes/members.applications.edit.tsx"
+      ),
       route("profile", "routes/members.profile.tsx"),
-      route("profile/:profile_id", "routes/members.profile.detail.tsx"),
       route("/:profile_id", "routes/members.profile.detail.tsx"),
       route("membership", "routes/members.membership.tsx"),
     ]),

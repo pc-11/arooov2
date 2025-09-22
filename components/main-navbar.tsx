@@ -16,15 +16,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router";
 
-export function MainNavbar() {
-  let location = useLocation();
-  const navigationItems = [
-    { name: "Home", href: "/members" },
-    { name: "Applications", href: "/members/applications" },
-    { name: "Edit Profile", href: "/members/profile" },
-    { name: "Manage Membership", href: "/members/membership" },
-  ];
+export interface NavigationItem {
+  name: string;
+  href: string;
+}
 
+export function MainNavbar({
+  navigationItems,
+}: {
+  navigationItems: NavigationItem[];
+}) {
+  let location = useLocation();
   const socialLinks = [
     { name: "Blog", href: "https://doubleunion.tumblr.com" },
     { name: "Instagram", href: "https://www.instagram.com/doubleunionsf" },

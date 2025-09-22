@@ -1,6 +1,8 @@
-import { Link, useLoaderData } from "react-router";
+import { Link, redirect, useLoaderData } from "react-router";
 import { Heading } from "../../components/ui-toolkit/heading";
 import React, { useState } from "react";
+
+import type { Route } from "./+types/members.home";
 
 import { Email } from "components/core/email";
 import {
@@ -12,6 +14,7 @@ import {
   MembersMailingListLink,
   SlackLink,
 } from "components/core/links";
+import { Role, RoleContext } from "components/auth/roles";
 
 interface Member {
   id: string;
@@ -95,6 +98,17 @@ const SectionMemberTable: React.FC<MemberTableProps> = ({ members }) => {
     </table>
   );
 };
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  let role: Role | null = context.get(RoleContext);
+  if (!role) {
+    throw new Response(null, { status: 404, statusText: "Not Found" });
+  }
+  if (role && role?.isProspectiveMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect(`/members/applications/${role.userId}`);
+  }
+}
 
 export default function MembersHome() {
   let members = [

@@ -1,9 +1,4 @@
-import { Badge } from "../../components/ui-toolkit/badge";
 import { Button } from "../../components/ui-toolkit/button";
-import { Divider } from "../../components/ui-toolkit/divider";
-import { Link } from "../../components/ui-toolkit/link";
-import { Text } from "../../components/ui-toolkit/text";
-import { Textarea } from "../../components/ui-toolkit/textarea";
 
 import { Email } from "../../components/core/email";
 import { HeadingComponentUsing } from "../../components/core/heading";
@@ -11,7 +6,9 @@ import { CancelLink, SupportLink } from "components/core/links";
 import { StripeDropdown } from "components/core/stripe-dropdown";
 import { TableOfContents } from "components/core/table-of-contents";
 
-import clsx from "clsx";
+import type { Route } from "./+types/members.membership";
+import { Role, RoleContext } from "components/auth/roles";
+import { redirect } from "react-router";
 
 /*
 
@@ -271,6 +268,16 @@ const SectionCancelMembership: React.FC = ({}) => {
     </div>
   );
 };
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  let role: Role | null = context.get(RoleContext);
+  if (!role?.isMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect("/");
+  }
+
+  return null;
+}
 
 export default function MembersMembership(): React.ReactElement {
   return (

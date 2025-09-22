@@ -1,9 +1,10 @@
-import type { Route as Route } from "./+types/logout";
+import type { Route } from "./+types/members.profile.detail";
 import {
   data as wrap_data,
   useLoaderData,
   Navigate,
   useNavigate,
+  redirect,
 } from "react-router";
 
 import { supabaseClientFromRequest } from "components/auth/client";
@@ -12,7 +13,7 @@ import type { Database, Tables } from "database.types";
 
 import { createHash } from "crypto";
 import { useToast } from "components/core/toast";
-import { useEffect } from "react";
+import { Role, RoleContext } from "components/auth/roles";
 
 type Profile = Tables<"profile">;
 type ProfileUpdate = Database["public"]["Tables"]["profile"]["Update"];
@@ -29,15 +30,15 @@ interface RenderableData {
   gravatar_url?: URL;
 }
 
-export async function loader({
-  request,
-  params,
-}: {
-  request: Route.LoaderArgs["request"];
-  params: { profile_id?: string };
-}) {
+export async function loader({ request, params, context }: Route.LoaderArgs) {
   if (!params?.profile_id) {
     return null;
+  }
+
+  let role: Role | null = context.get(RoleContext);
+  if (!role?.isMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect("/");
   }
 
   const { supabaseClient, headers } = supabaseClientFromRequest(request);

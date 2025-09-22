@@ -1,6 +1,11 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { data as wrap_data, useLoaderData, useFetcher } from "react-router";
+import {
+  data as wrap_data,
+  useLoaderData,
+  useFetcher,
+  redirect,
+} from "react-router";
 import type { Route } from "./+types/members.profile";
 
 import { Heading } from "components/ui-toolkit/heading";
@@ -9,6 +14,7 @@ import { Fieldset, Legend } from "components/ui-toolkit/fieldset";
 
 import type { Database, Tables } from "database.types";
 import { supabaseClientFromRequest } from "components/auth/client";
+import { Role, RoleContext } from "components/auth/roles";
 import { Email } from "components/core/email";
 import { useToast } from "components/core/toast";
 
@@ -353,6 +359,12 @@ const SectionAuthentication: React.FC = () => {
 // MARK: - React Router Reserved
 
 export async function loader({ request, context }: Route.LoaderArgs) {
+  let role: Role | null = context.get(RoleContext);
+  if (!role?.isMember()) {
+    console.log("not a member! let home decide where they belong");
+    return redirect("/");
+  }
+
   const { supabaseClient, headers } = supabaseClientFromRequest(request);
   const { data } = await supabaseClient.from("profile").select();
   if (!data || data.length != 1) {
